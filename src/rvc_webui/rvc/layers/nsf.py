@@ -1,4 +1,3 @@
-from typing import Optional, List, Union
 import math
 
 import torch
@@ -9,7 +8,7 @@ from torch.nn.utils.parametrizations import weight_norm
 from torch.nn.utils.parametrize import is_parametrized, remove_parametrizations
 
 from .generators import SineGenerator
-from .residuals import ResBlock1, ResBlock2, LRELU_SLOPE
+from .residuals import LRELU_SLOPE, ResBlock1, ResBlock2
 from .utils import call_weight_data_normal_if_Conv
 
 
@@ -39,7 +38,7 @@ class SourceModuleHnNSF(torch.nn.Module):
         add_noise_std: float = 0.003,
         voiced_threshod: int = 0,
     ):
-        super(SourceModuleHnNSF, self).__init__()
+        super().__init__()
 
         self.sine_amp = sine_amp
         self.noise_std = add_noise_std
@@ -66,15 +65,15 @@ class NSFGenerator(torch.nn.Module):
         self,
         initial_channel: int,
         resblock: str,
-        resblock_kernel_sizes: List[int],
-        resblock_dilation_sizes: List[List[int]],
-        upsample_rates: List[int],
+        resblock_kernel_sizes: list[int],
+        resblock_dilation_sizes: list[list[int]],
+        upsample_rates: list[int],
         upsample_initial_channel: int,
-        upsample_kernel_sizes: List[int],
+        upsample_kernel_sizes: list[int],
         gin_channels: int,
         sr: int,
     ):
-        super(NSFGenerator, self).__init__()
+        super().__init__()
         self.num_kernels = len(resblock_kernel_sizes)
         self.num_upsamples = len(upsample_rates)
 
@@ -137,8 +136,8 @@ class NSFGenerator(torch.nn.Module):
         self,
         x: torch.Tensor,
         f0: torch.Tensor,
-        g: Optional[torch.Tensor] = None,
-        n_res: Optional[int] = None,
+        g: torch.Tensor | None = None,
+        n_res: int | None = None,
     ) -> torch.Tensor:
         return super().__call__(x, f0, g=g, n_res=n_res)
 
@@ -146,8 +145,8 @@ class NSFGenerator(torch.nn.Module):
         self,
         x: torch.Tensor,
         f0: torch.Tensor,
-        g: Optional[torch.Tensor] = None,
-        n_res: Optional[int] = None,
+        g: torch.Tensor | None = None,
+        n_res: int | None = None,
     ) -> torch.Tensor:
         har_source = self.m_source(f0, self.upp)
         har_source = har_source.transpose(1, 2)
@@ -172,7 +171,7 @@ class NSFGenerator(torch.nn.Module):
                 x = ups(x)
                 x_source = noise_convs(har_source)
                 x = x + x_source
-                xs: Optional[torch.Tensor] = None
+                xs: torch.Tensor | None = None
                 l = [i * self.num_kernels + j for j in range(self.num_kernels)]
                 for j, resblock in enumerate(self.resblocks):
                     if j in l:

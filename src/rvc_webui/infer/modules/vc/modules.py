@@ -1,20 +1,19 @@
-import traceback
 import logging
 import os
+import traceback
 
 logger = logging.getLogger(__name__)
 
+
 import numpy as np
 import torch
-from io import BytesIO
 
 from rvc_webui.infer.lib.audio import (
     load_audio,
-    wav2,
     save_audio,
-    float_np_array_to_wav_buf,
 )
 from rvc_webui.rvc.synthesizer import get_synthesizer, load_synthesizer
+
 from .info import show_model_info
 from .pipeline import Pipeline
 from .utils import get_index_path_from_model, load_hubert

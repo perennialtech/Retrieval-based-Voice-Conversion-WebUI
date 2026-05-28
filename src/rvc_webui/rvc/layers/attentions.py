@@ -1,5 +1,4 @@
 import math
-from typing import Optional
 
 import torch
 from torch import nn
@@ -15,11 +14,11 @@ class MultiHeadAttention(nn.Module):
         window_size: int,
         p_dropout: float = 0.0,
         heads_share: bool = True,
-        block_length: Optional[int] = None,
+        block_length: int | None = None,
         proximal_bias: bool = False,
         proximal_init: bool = False,
     ):
-        super(MultiHeadAttention, self).__init__()
+        super().__init__()
         assert channels % n_heads == 0
 
         self.channels = channels
@@ -64,7 +63,7 @@ class MultiHeadAttention(nn.Module):
         self,
         x: torch.Tensor,
         c: torch.Tensor,
-        attn_mask: Optional[torch.Tensor] = None,
+        attn_mask: torch.Tensor | None = None,
     ) -> torch.Tensor:
         return super().__call__(x, c, attn_mask=attn_mask)
 
@@ -72,7 +71,7 @@ class MultiHeadAttention(nn.Module):
         self,
         x: torch.Tensor,
         c: torch.Tensor,
-        attn_mask: Optional[torch.Tensor] = None,
+        attn_mask: torch.Tensor | None = None,
     ) -> torch.Tensor:
         q = self.conv_q(x)
         k = self.conv_k(c)
@@ -88,7 +87,7 @@ class MultiHeadAttention(nn.Module):
         query: torch.Tensor,
         key: torch.Tensor,
         value: torch.Tensor,
-        mask: Optional[torch.Tensor] = None,
+        mask: torch.Tensor | None = None,
     ):
         # reshape [b, d, t] -> [b, n_h, t, d_k]
         b, d, t_s = key.size()
@@ -237,10 +236,10 @@ class FFN(nn.Module):
         filter_channels: int,
         kernel_size: int,
         p_dropout: float = 0.0,
-        activation: Optional[str] = None,
+        activation: str | None = None,
         causal: bool = False,
     ):
-        super(FFN, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.filter_channels = filter_channels

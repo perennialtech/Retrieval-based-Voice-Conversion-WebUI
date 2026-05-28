@@ -1,9 +1,9 @@
 import os
-import sys
-from dotenv import load_dotenv
 import shutil
-
+import sys
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 load_dotenv(PROJECT_ROOT / ".env")
@@ -75,26 +75,25 @@ class Harvest(multiprocessing.Process):
 
 def main():
     import json
-    import multiprocessing
     import re
     import threading
     import time
     from multiprocessing import Queue, cpu_count
-    from rvc_webui.infer.lib.audio import AudioIoProcess
     from multiprocessing.shared_memory import SharedMemory
 
-    import librosa
-    from rvc_webui.infer.modules.gui import TorchGate
-    import numpy as np
     import FreeSimpleGUI as sg
+    import librosa
+    import numpy as np
     import sounddevice as sd
     import torch
     import torch.nn.functional as F
     import torchaudio.transforms as tat
 
     import rvc_webui.infer.lib.rtrvc as rtrvc
-    from rvc_webui.i18n.i18n import I18nAuto
     from rvc_webui.config import Config
+    from rvc_webui.i18n.i18n import I18nAuto
+    from rvc_webui.infer.lib.audio import AudioIoProcess
+    from rvc_webui.infer.modules.gui import TorchGate
 
     i18n = I18nAuto()
 
@@ -179,7 +178,7 @@ def main():
                 if not p.exists():
                     p.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy(PROJECT_ROOT / "assets/configs/config.json", p)
-                with open(p, "r") as j:
+                with open(p) as j:
                     data = json.load(j)
                     data["sr_model"] = data["sr_type"] == "sr_model"
                     data["sr_device"] = data["sr_type"] == "sr_device"

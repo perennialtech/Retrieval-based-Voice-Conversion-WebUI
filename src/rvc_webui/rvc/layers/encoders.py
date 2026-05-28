@@ -1,11 +1,10 @@
 import math
-from typing import Tuple, Optional
 
 import torch
 from torch import nn
 
-from .attentions import MultiHeadAttention, FFN
-from .norms import LayerNorm, WN
+from .attentions import FFN, MultiHeadAttention
+from .norms import WN, LayerNorm
 from .utils import sequence_mask
 
 
@@ -20,7 +19,7 @@ class Encoder(nn.Module):
         p_dropout: float = 0.0,
         window_size: int = 10,
     ):
-        super(Encoder, self).__init__()
+        super().__init__()
 
         self.hidden_channels = hidden_channels
         self.filter_channels = filter_channels
@@ -94,7 +93,7 @@ class TextEncoder(nn.Module):
         p_dropout: float,
         f0: bool = True,
     ):
-        super(TextEncoder, self).__init__()
+        super().__init__()
 
         self.out_channels = out_channels
         self.hidden_channels = hidden_channels
@@ -121,10 +120,10 @@ class TextEncoder(nn.Module):
     def __call__(
         self,
         phone: torch.Tensor,
-        pitch: Optional[torch.Tensor],
+        pitch: torch.Tensor | None,
         lengths: torch.Tensor,
-        skip_head: Optional[int] = None,
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        skip_head: int | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         return super().__call__(
             phone,
             pitch,
@@ -135,10 +134,10 @@ class TextEncoder(nn.Module):
     def forward(
         self,
         phone: torch.Tensor,
-        pitch: Optional[torch.Tensor],
+        pitch: torch.Tensor | None,
         lengths: torch.Tensor,
-        skip_head: Optional[int] = None,
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        skip_head: int | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         x = self.emb_phone(phone)
         if pitch is not None:
             x += self.emb_pitch(pitch)
@@ -170,7 +169,7 @@ class PosteriorEncoder(nn.Module):
         n_layers: int,
         gin_channels=0,
     ):
-        super(PosteriorEncoder, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.hidden_channels = hidden_channels
@@ -190,13 +189,13 @@ class PosteriorEncoder(nn.Module):
         self.proj = nn.Conv1d(hidden_channels, out_channels * 2, 1)
 
     def __call__(
-        self, x: torch.Tensor, x_lengths: torch.Tensor, g: Optional[torch.Tensor] = None
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        self, x: torch.Tensor, x_lengths: torch.Tensor, g: torch.Tensor | None = None
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         return super().__call__(x, x_lengths, g=g)
 
     def forward(
-        self, x: torch.Tensor, x_lengths: torch.Tensor, g: Optional[torch.Tensor] = None
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        self, x: torch.Tensor, x_lengths: torch.Tensor, g: torch.Tensor | None = None
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         x_mask = torch.unsqueeze(
             sequence_mask(x_lengths, x.size(2)),
             1,

@@ -1,4 +1,5 @@
-import os, pathlib
+import os
+import pathlib
 
 import torch
 from fairseq import checkpoint_utils, data

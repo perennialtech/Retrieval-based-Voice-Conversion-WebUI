@@ -31,7 +31,7 @@ def extract_i18n_strings(node):
 
 strings = []
 for filename in glob.iglob("**/*.py", recursive=True):
-    with open(filename, "r") as f:
+    with open(filename) as f:
         code = f.read()
         if "I18nAuto" in code:
             tree = ast.parse(code)
@@ -44,7 +44,7 @@ print("Total unique:", len(code_keys))
 
 
 standard_file = PROJECT_ROOT / "src" / "rvc_webui" / "i18n" / "locale" / "en_US.json"
-with open(standard_file, "r", encoding="utf-8") as f:
+with open(standard_file, encoding="utf-8") as f:
     standard_data = json.load(f, object_pairs_hook=OrderedDict)
 standard_keys = set(standard_data.keys())
 

@@ -1,4 +1,5 @@
 import argparse
+import codecs
 import glob
 import json
 import logging
@@ -6,7 +7,6 @@ import os
 import sys
 from copy import deepcopy
 
-import codecs
 import numpy as np
 import torch
 from scipy.io.wavfile import read
@@ -82,15 +82,13 @@ def load_checkpoint(checkpoint_path, model, optimizer=None, load_opt=1):
         optimizer.load_state_dict(checkpoint_dict["optimizer"])
     #   except:
     #     traceback.print_exc()
-    logger.info("Loaded checkpoint '{}' (epoch {})".format(checkpoint_path, iteration))
+    logger.info(f"Loaded checkpoint '{checkpoint_path}' (epoch {iteration})")
     return model, optimizer, learning_rate, iteration
 
 
 def save_checkpoint(model, optimizer, learning_rate, iteration, checkpoint_path):
     logger.info(
-        "Saving model and optimizer state at epoch {} to {}".format(
-            iteration, checkpoint_path
-        )
+        f"Saving model and optimizer state at epoch {iteration} to {checkpoint_path}"
     )
     if hasattr(model, "module"):
         state_dict = model.module.state_dict()
@@ -304,7 +302,7 @@ def get_hparams(init=True):
     experiment_dir = os.path.join("./logs", args.experiment_dir)
 
     config_save_path = os.path.join(experiment_dir, "config.json")
-    with open(config_save_path, "r") as f:
+    with open(config_save_path) as f:
         config = json.load(f)
 
     hparams = HParams(**config)

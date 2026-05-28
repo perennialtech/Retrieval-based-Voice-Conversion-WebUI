@@ -1,9 +1,10 @@
-import os
-from pathlib import Path
 import hashlib
-import requests
-from io import BytesIO
 import logging
+import os
+from io import BytesIO
+from pathlib import Path
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +126,7 @@ def check_all_assets(update=False) -> bool:
     if not check_model(
         BASE_DIR / "assets" / "uvr5_weights" / "onnx_dereverb_By_FoxJoy",
         "vocals.onnx",
-        os.environ[f"sha256_uvr5_vocals_onnx"],
+        os.environ["sha256_uvr5_vocals_onnx"],
         update,
     ):
         return False
@@ -142,7 +143,7 @@ def download_and_extract_tar_gz(url: str, folder: str):
     with BytesIO() as out_file:
         out_file.write(response.content)
         out_file.seek(0)
-        logger.info(f"downloaded.")
+        logger.info("downloaded.")
         with tarfile.open(fileobj=out_file, mode="r:gz") as tar:
             tar.extractall(folder)
         logger.info(f"extracted into {folder}")
@@ -156,15 +157,15 @@ def download_and_extract_zip(url: str, folder: str):
     with BytesIO() as out_file:
         out_file.write(response.content)
         out_file.seek(0)
-        logger.info(f"downloaded.")
+        logger.info("downloaded.")
         with zipfile.ZipFile(out_file) as zip_ref:
             zip_ref.extractall(folder)
         logger.info(f"extracted into {folder}")
 
 
 def download_all_assets(tmpdir: str, version="0.2.11"):
-    import subprocess
     import platform
+    import subprocess
 
     archs = {
         "aarch64": "arm64",

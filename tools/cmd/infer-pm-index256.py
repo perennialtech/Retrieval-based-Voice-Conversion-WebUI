@@ -3,8 +3,8 @@
 对源特征进行检索
 """
 
-import os
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -20,17 +20,16 @@ import librosa
 import numpy as np
 import torch.nn.functional as F
 from fairseq import checkpoint_utils
-
-from rvc_webui.rvc.layers.synthesizers import (
-    SynthesizerTrnMs256NSFsid as SynthesizerTrn256,
-)  # hifigan_nsf
 from scipy.io import wavfile
 
 from rvc_webui.infer.lib.audio import load_audio
+from rvc_webui.rvc.layers.synthesizers import (
+    SynthesizerTrnMs256NSFsid as SynthesizerTrn256,
+)  # hifigan_nsf
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_path = r"E:\codes\py39\vits_vc_gpu_train\assets\hubert\hubert_base.pt"  #
-logger.info("Load model(s) from {}".format(model_path))
+logger.info(f"Load model(s) from {model_path}")
 models, saved_cfg, task = checkpoint_utils.load_model_ensemble_and_task(
     [model_path],
     suffix="",

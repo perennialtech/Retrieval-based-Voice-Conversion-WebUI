@@ -1,17 +1,15 @@
-from typing import Optional
 
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torch.nn.utils.parametrize import is_parametrized, remove_parametrizations
 
 from .utils import activate_add_tanh_sigmoid_multiply
-
-from torch.nn.utils.parametrize import is_parametrized, remove_parametrizations
 
 
 class LayerNorm(nn.Module):
     def __init__(self, channels: int, eps: float = 1e-5):
-        super(LayerNorm, self).__init__()
+        super().__init__()
         self.channels = channels
         self.eps = eps
 
@@ -34,7 +32,7 @@ class WN(torch.nn.Module):
         gin_channels: int = 0,
         p_dropout: float = 0,
     ):
-        super(WN, self).__init__()
+        super().__init__()
         assert kernel_size % 2 == 1
         self.hidden_channels = hidden_channels
         self.kernel_size = (kernel_size,)
@@ -86,7 +84,7 @@ class WN(torch.nn.Module):
         self,
         x: torch.Tensor,
         x_mask: torch.Tensor,
-        g: Optional[torch.Tensor] = None,
+        g: torch.Tensor | None = None,
     ) -> torch.Tensor:
         return super().__call__(x, x_mask, g=g)
 
@@ -94,7 +92,7 @@ class WN(torch.nn.Module):
         self,
         x: torch.Tensor,
         x_mask: torch.Tensor,
-        g: Optional[torch.Tensor] = None,
+        g: torch.Tensor | None = None,
     ) -> torch.Tensor:
         output = torch.zeros_like(x)
 

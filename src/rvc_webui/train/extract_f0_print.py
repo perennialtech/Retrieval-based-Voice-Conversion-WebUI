@@ -1,8 +1,8 @@
+import importlib.util
 import os
 import sys
 import traceback
 from pathlib import Path
-import importlib.util
 
 from dotenv import load_dotenv
 
@@ -14,7 +14,6 @@ import logging
 import numpy as np
 
 from rvc_webui.infer.lib.audio import load_audio
-
 from rvc_webui.rvc.f0 import Generator
 
 logging.getLogger("numba").setLevel(logging.WARNING)
@@ -36,10 +35,10 @@ device = sys.argv[4]
 is_half = sys.argv[5] == "True"
 
 if importlib.util.find_spec("torch_directml") is not None:
-    import torch_directml  # use side effect
+    pass  # use side effect
 
 
-class FeatureInput(object):
+class FeatureInput:
     def __init__(self, is_half: bool, device="cpu", samplerate=16000, hop_size=160):
         self.fs = samplerate
         self.hop = hop_size

@@ -1,8 +1,7 @@
 import librosa
 
-from rvc_webui.rvc.onnx import RVC
-
 from rvc_webui.infer.lib.audio import save_audio
+from rvc_webui.rvc.onnx import RVC
 
 hop_size = 512
 sampling_rate = 40000  # 采样率

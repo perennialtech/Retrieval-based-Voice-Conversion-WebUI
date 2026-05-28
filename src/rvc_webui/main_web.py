@@ -1,8 +1,8 @@
 import os
 import sys
-from dotenv import load_dotenv
-
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 load_dotenv(PROJECT_ROOT / ".env")
@@ -12,30 +12,33 @@ if sys.platform == "darwin":
     os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
     os.environ["OMP_NUM_THREADS"] = "1"
 
-from rvc_webui.infer.modules.vc import VC, show_info, hash_similarity
-from rvc_webui.infer.modules.uvr5.modules import uvr
+import json
+import logging
+import pathlib
+import platform
+import shutil
+import threading
+import traceback
+import warnings
+from random import shuffle
+from subprocess import Popen
+from time import sleep
+
+import faiss
+import gradio as gr
+import numpy as np
+import torch
+from sklearn.cluster import MiniBatchKMeans
+
+from rvc_webui.config import Config
+from rvc_webui.i18n.i18n import I18nAuto
 from rvc_webui.infer.lib.train.process_ckpt import (
     change_info,
     extract_small_model,
     merge,
 )
-from rvc_webui.i18n.i18n import I18nAuto
-from rvc_webui.config import Config
-from sklearn.cluster import MiniBatchKMeans
-import torch, platform
-import numpy as np
-import gradio as gr
-import faiss
-import pathlib
-import json
-from time import sleep
-from subprocess import Popen
-from random import shuffle
-import warnings
-import traceback
-import threading
-import shutil
-import logging
+from rvc_webui.infer.modules.uvr5.modules import uvr
+from rvc_webui.infer.modules.vc import VC, hash_similarity, show_info
 
 logging.getLogger("numba").setLevel(logging.WARNING)
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -191,12 +194,12 @@ def preprocess_dataset(trainset_dir, exp_dir, sr, n_p):
         ),
     ).start()
     while 1:
-        with open(log_file_path, "r") as f:
+        with open(log_file_path) as f:
             yield (f.read())
         sleep(1)
         if done[0]:
             break
-    with open(log_file_path, "r") as f:
+    with open(log_file_path) as f:
         log = f.read()
     logger.info(log)
     yield log
@@ -235,12 +238,12 @@ def extract_f0_feature(n_p, f0method, if_f0, exp_dir, version19):
                 ),
             ).start()
         while 1:
-            with open(exp_path / "extract_f0_feature.log", "r") as f:
+            with open(exp_path / "extract_f0_feature.log") as f:
                 yield (f.read())
             sleep(1)
             if done[0]:
                 break
-        with open(exp_path / "extract_f0_feature.log", "r") as f:
+        with open(exp_path / "extract_f0_feature.log") as f:
             log = f.read()
         logger.info(log)
         yield log
@@ -285,12 +288,12 @@ def extract_f0_feature(n_p, f0method, if_f0, exp_dir, version19):
         ),
     ).start()
     while 1:
-        with open(exp_path / "extract_f0_feature.log", "r") as f:
+        with open(exp_path / "extract_f0_feature.log") as f:
             yield (f.read())
         sleep(1)
         if done[0]:
             break
-    with open(exp_path / "extract_f0_feature.log", "r") as f:
+    with open(exp_path / "extract_f0_feature.log") as f:
         log = f.read()
     logger.info(log)
     yield log
@@ -683,7 +686,7 @@ def change_info_(ckpt_path):
         return {"__type__": "update"}, {"__type__": "update"}, {"__type__": "update"}
     try:
         with open(
-            ckpt_path.replace(os.path.basename(ckpt_path), "train.log"), "r"
+            ckpt_path.replace(os.path.basename(ckpt_path), "train.log")
         ) as f:
             info = eval(f.read().strip("\n").split("\n")[0].split("\t")[-1])
             sr, f0 = info["sample_rate"], info["if_f0"]
@@ -1547,10 +1550,10 @@ with gr.Blocks(title="RVC WebUI") as app:
         with gr.TabItem(tab_faq):
             try:
                 if tab_faq == "FAQ (Frequently Asked Questions)":
-                    with open("docs/cn/faq.md", "r", encoding="utf8") as f:
+                    with open("docs/cn/faq.md", encoding="utf8") as f:
                         info = f.read()
                 else:
-                    with open("docs/en/faq_en.md", "r", encoding="utf8") as f:
+                    with open("docs/en/faq_en.md", encoding="utf8") as f:
                         info = f.read()
                 gr.Markdown(value=info)
             except:

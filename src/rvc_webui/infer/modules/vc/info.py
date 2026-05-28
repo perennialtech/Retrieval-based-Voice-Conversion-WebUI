@@ -1,9 +1,11 @@
 import traceback
-from rvc_webui.i18n.i18n import I18nAuto
 from datetime import datetime
+
 import torch
 
-from .hash import model_hash_ckpt, hash_id, hash_similarity
+from rvc_webui.i18n.i18n import I18nAuto
+
+from .hash import hash_id, hash_similarity, model_hash_ckpt
 
 i18n = I18nAuto()
 

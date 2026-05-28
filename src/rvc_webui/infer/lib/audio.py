@@ -1,25 +1,24 @@
-from io import BufferedWriter, BytesIO
-from pathlib import Path
-from typing import Dict, Tuple, Optional, Union, List
-import os
 import math
-import wave
+import os
 import signal
-from multiprocessing import Process, Value, Event
+import wave
+from io import BufferedWriter, BytesIO
+from multiprocessing import Event, Process, Value
 from multiprocessing.shared_memory import SharedMemory
+from pathlib import Path
 
-import numpy as np
-from numba import jit
 import av
-from av.audio.resampler import AudioResampler
-from av.audio.frame import AudioFrame
+import numpy as np
 import scipy.io.wavfile as wavfile
+from av.audio.frame import AudioFrame
+from av.audio.resampler import AudioResampler
+from numba import jit
 
-video_format_dict: Dict[str, str] = {
+video_format_dict: dict[str, str] = {
     "m4a": "mp4",
 }
 
-audio_format_dict: Dict[str, str] = {
+audio_format_dict: dict[str, str] = {
     "ogg": "libvorbis",
     "mp4": "aac",
 }
@@ -76,11 +75,11 @@ def wav2(i: BytesIO, o: BufferedWriter, format: str):
 
 
 def load_audio(
-    file: Union[str, BytesIO, Path],
-    sr: Optional[int] = None,
-    format: Optional[str] = None,
+    file: str | BytesIO | Path,
+    sr: int | None = None,
+    format: str | None = None,
     mono=True,
-) -> Union[np.ndarray, Tuple[np.ndarray, int]]:
+) -> np.ndarray | tuple[np.ndarray, int]:
     if (isinstance(file, str) and not Path(file).exists()) or (
         isinstance(file, Path) and not file.exists()
     ):
@@ -113,7 +112,7 @@ def load_audio(
 
     offset = 0
 
-    def process_packet(packet: List[AudioFrame]):
+    def process_packet(packet: list[AudioFrame]):
         frames_data = []
         rate = 0
         for frame in packet:
@@ -191,7 +190,7 @@ def resample_audio(
     output_container.close()
 
 
-def get_audio_properties(input_path: str) -> Tuple[int, int]:
+def get_audio_properties(input_path: str) -> tuple[int, int]:
     container = av.open(input_path)
     audio_stream = next(s for s in container.streams if s.type == "audio")
     channels = 1 if audio_stream.layout == "mono" else 2

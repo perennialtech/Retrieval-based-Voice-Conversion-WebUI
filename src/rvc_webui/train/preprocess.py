@@ -15,7 +15,7 @@ import traceback
 
 import numpy as np
 
-from rvc_webui.infer.lib.audio import load_audio, float_np_array_to_wav_buf, save_audio
+from rvc_webui.infer.lib.audio import float_np_array_to_wav_buf, load_audio, save_audio
 from rvc_webui.infer.lib.slicer2 import Slicer
 
 f = open("%s/preprocess.log" % exp_dir, "a+")

@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class ConvTDFNetTrim:
     def __init__(
         self, device, model_name, target_name, L, dim_f, dim_t, n_fft, hop=1024
     ):
-        super(ConvTDFNetTrim, self).__init__()
+        super().__init__()
 
         self.dim_f = dim_f
         self.dim_t = 2**dim_t

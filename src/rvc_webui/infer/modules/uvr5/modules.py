@@ -1,13 +1,13 @@
+import logging
 import os
 import traceback
-import logging
 
 logger = logging.getLogger(__name__)
 
-from rvc_webui.infer.lib.audio import resample_audio, get_audio_properties
 import torch
 
 from rvc_webui.config import Config
+from rvc_webui.infer.lib.audio import get_audio_properties, resample_audio
 from rvc_webui.infer.modules.uvr5.mdxnet import MDXNetDereverb
 from rvc_webui.infer.modules.uvr5.vr import AudioPre
 

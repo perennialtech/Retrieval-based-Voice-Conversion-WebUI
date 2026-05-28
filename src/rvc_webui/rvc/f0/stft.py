@@ -1,4 +1,3 @@
-from typing import Optional, Tuple, Union
 
 import numpy as np
 import torch
@@ -12,7 +11,7 @@ class STFT(torch.nn.Module):
         self,
         filter_length=1024,
         hop_length=512,
-        win_length: Optional[int] = None,
+        win_length: int | None = None,
         window="hann",
         use_torch_stft=True,
     ):
@@ -31,7 +30,7 @@ class STFT(torch.nn.Module):
             window {str} -- Type of window to use (options are bartlett, hann, hamming, blackman, blackmanharris)
                 (default: {'hann'})
         """
-        super(STFT, self).__init__()
+        super().__init__()
         self.filter_length = filter_length
         self.hop_length = hop_length
         self.pad_amount = int(self.filter_length / 2)
@@ -44,7 +43,7 @@ class STFT(torch.nn.Module):
 
         fourier_basis = np.fft.fft(np.eye(self.filter_length))
 
-        cutoff = int((self.filter_length / 2 + 1))
+        cutoff = int(self.filter_length / 2 + 1)
         fourier_basis = np.vstack(
             [np.real(fourier_basis[:cutoff, :]), np.imag(fourier_basis[:cutoff, :])]
         )
@@ -81,7 +80,7 @@ class STFT(torch.nn.Module):
         self,
         input_data: torch.Tensor,
         return_phase=False,
-    ) -> Tuple[Union[Tuple[torch.Tensor, torch.Tensor], torch.Tensor]]:
+    ) -> tuple[tuple[torch.Tensor, torch.Tensor] | torch.Tensor]:
         """Take input data (audio) to STFT domain.
 
         Arguments:

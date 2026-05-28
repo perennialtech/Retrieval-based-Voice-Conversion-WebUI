@@ -1,4 +1,3 @@
-from typing import List, Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -11,7 +10,7 @@ class ConvBlockRes(nn.Module):
         out_channels: int,
         momentum: float = 0.01,
     ):
-        super(ConvBlockRes, self).__init__()
+        super().__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(
                 in_channels=in_channels,
@@ -51,12 +50,12 @@ class Encoder(nn.Module):
         in_channels: int,
         in_size: int,
         n_encoders: int,
-        kernel_size: Tuple[int, int],
+        kernel_size: tuple[int, int],
         n_blocks: int,
         out_channels=16,
         momentum=0.01,
     ):
-        super(Encoder, self).__init__()
+        super().__init__()
         self.n_encoders = n_encoders
 
         self.bn = nn.BatchNorm2d(in_channels, momentum=momentum)
@@ -73,11 +72,11 @@ class Encoder(nn.Module):
         self.out_size = in_size
         self.out_channel = out_channels
 
-    def __call__(self, x: torch.Tensor) -> Tuple[torch.Tensor, List[torch.Tensor]]:
+    def __call__(self, x: torch.Tensor) -> tuple[torch.Tensor, list[torch.Tensor]]:
         return super().__call__(x)
 
-    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, List[torch.Tensor]]:
-        concat_tensors: List[torch.Tensor] = []
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, list[torch.Tensor]]:
+        concat_tensors: list[torch.Tensor] = []
         x = self.bn(x)
         for layer in self.layers:
             t, x = layer(x)
@@ -90,11 +89,11 @@ class ResEncoderBlock(nn.Module):
         self,
         in_channels: int,
         out_channels: int,
-        kernel_size: Tuple[int, int],
+        kernel_size: tuple[int, int],
         n_blocks=1,
         momentum=0.01,
     ):
-        super(ResEncoderBlock, self).__init__()
+        super().__init__()
         self.n_blocks = n_blocks
         self.kernel_size = kernel_size
 
@@ -109,7 +108,7 @@ class ResEncoderBlock(nn.Module):
     def forward(
         self,
         x: torch.Tensor,
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+    ) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
         for conv in self.conv:
             x = conv(x)
         if self.kernel_size is not None:
@@ -119,7 +118,7 @@ class ResEncoderBlock(nn.Module):
 
 class Intermediate(nn.Module):
     def __init__(self, in_channels, out_channels, n_inters, n_blocks, momentum=0.01):
-        super(Intermediate, self).__init__()
+        super().__init__()
 
         self.layers = nn.ModuleList()
         self.layers.append(
@@ -138,7 +137,7 @@ class Intermediate(nn.Module):
 
 class ResDecoderBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride, n_blocks=1, momentum=0.01):
-        super(ResDecoderBlock, self).__init__()
+        super().__init__()
         out_padding = (0, 1) if stride == (1, 2) else (1, 1)
 
         self.conv1 = nn.Sequential(
@@ -169,7 +168,7 @@ class ResDecoderBlock(nn.Module):
 
 class Decoder(nn.Module):
     def __init__(self, in_channels, n_decoders, stride, n_blocks, momentum=0.01):
-        super(Decoder, self).__init__()
+        super().__init__()
 
         self.layers = nn.ModuleList()
         self.n_decoders = n_decoders
@@ -180,7 +179,7 @@ class Decoder(nn.Module):
             )
             in_channels = out_channels
 
-    def forward(self, x: torch.Tensor, concat_tensors: List[torch.Tensor]):
+    def forward(self, x: torch.Tensor, concat_tensors: list[torch.Tensor]):
         for i, layer in enumerate(self.layers):
             x = layer(x, concat_tensors[-1 - i])
         return x
@@ -189,14 +188,14 @@ class Decoder(nn.Module):
 class DeepUnet(nn.Module):
     def __init__(
         self,
-        kernel_size: Tuple[int, int],
+        kernel_size: tuple[int, int],
         n_blocks: int,
         en_de_layers=5,
         inter_layers=4,
         in_channels=1,
         en_out_channels=16,
     ):
-        super(DeepUnet, self).__init__()
+        super().__init__()
         self.encoder = Encoder(
             in_channels, 128, en_de_layers, kernel_size, n_blocks, en_out_channels
         )

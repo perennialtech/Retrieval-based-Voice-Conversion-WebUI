@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn
@@ -8,7 +7,7 @@ from . import layers_537238KB as layers
 
 class BaseASPPNet(nn.Module):
     def __init__(self, nin, ch, dilations=(4, 8, 16)):
-        super(BaseASPPNet, self).__init__()
+        super().__init__()
         self.enc1 = layers.Encoder(nin, ch, 3, 2, 1)
         self.enc2 = layers.Encoder(ch, ch * 2, 3, 2, 1)
         self.enc3 = layers.Encoder(ch * 2, ch * 4, 3, 2, 1)
@@ -39,7 +38,7 @@ class BaseASPPNet(nn.Module):
 
 class CascadedASPPNet(nn.Module):
     def __init__(self, n_fft):
-        super(CascadedASPPNet, self).__init__()
+        super().__init__()
         self.stg1_low_band_net = BaseASPPNet(2, 64)
         self.stg1_high_band_net = BaseASPPNet(2, 64)
 

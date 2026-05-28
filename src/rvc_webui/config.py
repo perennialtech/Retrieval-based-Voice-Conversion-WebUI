@@ -1,19 +1,17 @@
 import argparse
-import os
-import sys
+import importlib.util
 import json
 import shutil
+import sys
 from multiprocessing import cpu_count
-import importlib.util
-
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-import torch
-
 # TODO: move device selection into rvc
 import logging
+
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +30,7 @@ class Singleton(type):
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super().__call__(*args, **kwargs)
         return cls._instances[cls]
 
 
@@ -63,14 +61,13 @@ class Config(metaclass=Singleton):
     @staticmethod
     def load_config_json() -> dict:
         d = {}
-        import shutil
 
         for config_file in version_config_list:
             p = PROJECT_ROOT / "logs/userdata/configs" / config_file
             if not p.exists():
                 p.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy(PROJECT_ROOT / "assets/configs" / config_file, p)
-            with open(p, "r") as f:
+            with open(p) as f:
                 d[config_file] = json.load(f)
         return d
 
@@ -173,7 +170,7 @@ class Config(metaclass=Singleton):
         for config_file in version_config_list:
             self.json_config[config_file]["train"]["fp16_run"] = False
             p = PROJECT_ROOT / "logs/userdata/configs" / config_file
-            with open(p, "r") as f:
+            with open(p) as f:
                 strr = f.read().replace("true", "false")
             with open(p, "w") as f:
                 f.write(strr)
@@ -283,7 +280,7 @@ class CPUConfig(metaclass=Singleton):
         d = {}
         for config_file in version_config_list:
             p = PROJECT_ROOT / "assets/configs" / config_file
-            with open(p, "r") as f:
+            with open(p) as f:
                 d[config_file] = json.load(f)
         return d
 

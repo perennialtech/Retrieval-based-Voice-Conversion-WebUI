@@ -2,14 +2,13 @@ import contextlib
 import importlib
 
 import torch
-import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
 
 # pylint: disable=protected-access, missing-function-docstring, line-too-long, unnecessary-lambda, no-else-return
 
 
 class CondFunc:  # pylint: disable=missing-class-docstring
     def __new__(cls, orig_func, sub_func, cond_func):
-        self = super(CondFunc, cls).__new__(cls)
+        self = super().__new__(cls)
         if isinstance(orig_func, str):
             func_path = orig_func.split(".")
             for i in range(len(func_path) - 1, -1, -1):

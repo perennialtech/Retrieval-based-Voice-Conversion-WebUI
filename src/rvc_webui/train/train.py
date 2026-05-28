@@ -1,7 +1,5 @@
-import os
-import sys
 import logging
-from typing import Tuple
+import os
 
 logger = logging.getLogger(__name__)
 logging.getLogger("numba").setLevel(logging.WARNING)
@@ -18,11 +16,11 @@ from random import randint, shuffle
 import torch
 
 try:
-    import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
 
     if torch.xpu.is_available():
-        from rvc_webui.rvc.ipex import ipex_init, gradscaler_init
         from torch.xpu.amp import autocast
+
+        from rvc_webui.rvc.ipex import gradscaler_init, ipex_init
 
         GradScaler = gradscaler_init()
         ipex_init()
@@ -30,8 +28,8 @@ except Exception:
     pass
 finally:
     if not ("GradScaler" in globals() and "autocast" in globals()):
-        from torch.amp.grad_scaler import GradScaler
         from torch.amp.autocast_mode import autocast
+        from torch.amp.grad_scaler import GradScaler
 
 torch.backends.cudnn.deterministic = False
 torch.backends.cudnn.benchmark = False
@@ -52,7 +50,6 @@ from rvc_webui.infer.lib.train.data_utils import (
     TextAudioLoader,
     TextAudioLoaderMultiNSFsid,
 )
-
 from rvc_webui.rvc.layers.discriminators import MultiPeriodDiscriminator
 
 if hps.version == "v1":
@@ -65,6 +62,8 @@ if hps.version == "v1":
 else:
     from rvc_webui.rvc.layers.synthesizers import (
         SynthesizerTrnMs768NSFsid as RVC_Model_f0,
+    )
+    from rvc_webui.rvc.layers.synthesizers import (
         SynthesizerTrnMs768NSFsid_nono as RVC_Model_nof0,
     )
 
@@ -79,7 +78,6 @@ from rvc_webui.infer.lib.train.mel_processing import (
     spec_to_mel_torch,
 )
 from rvc_webui.infer.lib.train.process_ckpt import save_small_model
-
 from rvc_webui.rvc.layers.utils import (
     slice_on_last_dim,
     total_grad_norm,
@@ -402,7 +400,7 @@ def train_and_evaluate(
     rank,
     epoch,
     hps,
-    nets: Tuple[RVC_Model_f0, MultiPeriodDiscriminator],
+    nets: tuple[RVC_Model_f0, MultiPeriodDiscriminator],
     optims,
     schedulers,
     scaler,
@@ -607,9 +605,7 @@ def train_and_evaluate(
             if global_step % hps.train.log_interval == 0:
                 lr = optim_g.param_groups[0]["lr"]
                 logger.info(
-                    "Train Epoch: {} [{:.0f}%]".format(
-                        epoch, 100.0 * batch_idx / len(train_loader)
-                    )
+                    f"Train Epoch: {epoch} [{100.0 * batch_idx / len(train_loader):.0f}%]"
                 )
                 # Amor For Tensorboard display
                 if loss_mel > 75:
@@ -637,13 +633,13 @@ def train_and_evaluate(
                 )
 
                 scalar_dict.update(
-                    {"loss/g/{}".format(i): v for i, v in enumerate(losses_gen)}
+                    {f"loss/g/{i}": v for i, v in enumerate(losses_gen)}
                 )
                 scalar_dict.update(
-                    {"loss/d_r/{}".format(i): v for i, v in enumerate(losses_disc_r)}
+                    {f"loss/d_r/{i}": v for i, v in enumerate(losses_disc_r)}
                 )
                 scalar_dict.update(
-                    {"loss/d_g/{}".format(i): v for i, v in enumerate(losses_disc_g)}
+                    {f"loss/d_g/{i}": v for i, v in enumerate(losses_disc_g)}
                 )
                 image_dict = {
                     "slice/mel_org": utils.plot_spectrogram_to_numpy(
@@ -672,14 +668,14 @@ def train_and_evaluate(
                 optim_g,
                 hps.train.learning_rate,
                 epoch,
-                os.path.join(hps.model_dir, "G_{}.pth".format(global_step)),
+                os.path.join(hps.model_dir, f"G_{global_step}.pth"),
             )
             utils.save_checkpoint(
                 net_d,
                 optim_d,
                 hps.train.learning_rate,
                 epoch,
-                os.path.join(hps.model_dir, "D_{}.pth".format(global_step)),
+                os.path.join(hps.model_dir, f"D_{global_step}.pth"),
             )
         else:
             utils.save_checkpoint(
@@ -719,7 +715,7 @@ def train_and_evaluate(
             )
 
     if rank == 0:
-        logger.info("====> Epoch: {} {}".format(epoch, epoch_recorder.record()))
+        logger.info(f"====> Epoch: {epoch} {epoch_recorder.record()}")
     if epoch >= hps.total_epoch and rank == 0:
         logger.info("Training is done. The program is closed.")
 

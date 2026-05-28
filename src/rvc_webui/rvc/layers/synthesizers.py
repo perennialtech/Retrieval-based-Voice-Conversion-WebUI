@@ -1,17 +1,15 @@
-from typing import Optional, List, Union
 
 import torch
 from torch import nn
 from torch.nn.utils import parametrize
 
-
-from .encoders import TextEncoder, PosteriorEncoder
+from .encoders import PosteriorEncoder, TextEncoder
 from .generators import Generator
 from .nsf import NSFGenerator
 from .residuals import ResidualCouplingBlock
 from .utils import (
-    slice_on_last_dim,
     rand_slice_segments_on_last_dim,
+    slice_on_last_dim,
 )
 
 
@@ -28,14 +26,14 @@ class SynthesizerTrnMsNSFsid(nn.Module):
         kernel_size: int,
         p_dropout: int,
         resblock: str,
-        resblock_kernel_sizes: List[int],
-        resblock_dilation_sizes: List[List[int]],
-        upsample_rates: List[int],
+        resblock_kernel_sizes: list[int],
+        resblock_dilation_sizes: list[list[int]],
+        upsample_rates: list[int],
         upsample_initial_channel: int,
-        upsample_kernel_sizes: List[int],
+        upsample_kernel_sizes: list[int],
         spk_embed_dim: int,
         gin_channels: int,
-        sr: Union[str, int],
+        sr: str | int,
         encoder_dim: int,
         use_f0: bool,
     ):
@@ -135,9 +133,9 @@ class SynthesizerTrnMsNSFsid(nn.Module):
         phone_lengths: torch.Tensor,
         y: torch.Tensor,
         y_lengths: torch.Tensor,
-        ds: Optional[torch.Tensor] = None,
-        pitch: Optional[torch.Tensor] = None,
-        pitchf: Optional[torch.Tensor] = None,
+        ds: torch.Tensor | None = None,
+        pitch: torch.Tensor | None = None,
+        pitchf: torch.Tensor | None = None,
     ):  # 这里ds是id，[bs,1]
         # print(1,pitch.shape)#[bs,t]
         embg = self.emb_g(ds).unsqueeze(-1)  # [b, 256, 1]##1是t，广播的
@@ -162,11 +160,11 @@ class SynthesizerTrnMsNSFsid(nn.Module):
         phone: torch.Tensor,
         phone_lengths: torch.Tensor,
         sid: torch.Tensor,
-        pitch: Optional[torch.Tensor] = None,
-        pitchf: Optional[torch.Tensor] = None,  # nsff0
-        skip_head: Optional[int] = None,
-        return_length: Optional[int] = None,
-        return_length2: Optional[int] = None,
+        pitch: torch.Tensor | None = None,
+        pitchf: torch.Tensor | None = None,  # nsff0
+        skip_head: int | None = None,
+        return_length: int | None = None,
+        return_length2: int | None = None,
     ):
         g = self.emb_g(sid).unsqueeze(-1)
         if skip_head is not None and return_length is not None:
@@ -216,14 +214,14 @@ class SynthesizerTrnMs256NSFsid(SynthesizerTrnMsNSFsid):
         kernel_size: int,
         p_dropout: int,
         resblock: str,
-        resblock_kernel_sizes: List[int],
-        resblock_dilation_sizes: List[List[int]],
-        upsample_rates: List[int],
+        resblock_kernel_sizes: list[int],
+        resblock_dilation_sizes: list[list[int]],
+        upsample_rates: list[int],
         upsample_initial_channel: int,
-        upsample_kernel_sizes: List[int],
+        upsample_kernel_sizes: list[int],
         spk_embed_dim: int,
         gin_channels: int,
-        sr: Union[str, int],
+        sr: str | int,
     ):
         super().__init__(
             spec_channels,
@@ -262,14 +260,14 @@ class SynthesizerTrnMs768NSFsid(SynthesizerTrnMsNSFsid):
         kernel_size: int,
         p_dropout: int,
         resblock: str,
-        resblock_kernel_sizes: List[int],
-        resblock_dilation_sizes: List[List[int]],
-        upsample_rates: List[int],
+        resblock_kernel_sizes: list[int],
+        resblock_dilation_sizes: list[list[int]],
+        upsample_rates: list[int],
         upsample_initial_channel: int,
-        upsample_kernel_sizes: List[int],
+        upsample_kernel_sizes: list[int],
         spk_embed_dim: int,
         gin_channels: int,
-        sr: Union[str, int],
+        sr: str | int,
     ):
         super().__init__(
             spec_channels,
@@ -308,14 +306,14 @@ class SynthesizerTrnMs256NSFsid_nono(SynthesizerTrnMsNSFsid):
         kernel_size: int,
         p_dropout: int,
         resblock: str,
-        resblock_kernel_sizes: List[int],
-        resblock_dilation_sizes: List[List[int]],
-        upsample_rates: List[int],
+        resblock_kernel_sizes: list[int],
+        resblock_dilation_sizes: list[list[int]],
+        upsample_rates: list[int],
         upsample_initial_channel: int,
-        upsample_kernel_sizes: List[int],
+        upsample_kernel_sizes: list[int],
         spk_embed_dim: int,
         gin_channels: int,
-        sr: Union[str, int],
+        sr: str | int,
     ):
         super().__init__(
             spec_channels,
@@ -354,14 +352,14 @@ class SynthesizerTrnMs768NSFsid_nono(SynthesizerTrnMsNSFsid):
         kernel_size: int,
         p_dropout: int,
         resblock: str,
-        resblock_kernel_sizes: List[int],
-        resblock_dilation_sizes: List[List[int]],
-        upsample_rates: List[int],
+        resblock_kernel_sizes: list[int],
+        resblock_dilation_sizes: list[list[int]],
+        upsample_rates: list[int],
         upsample_initial_channel: int,
-        upsample_kernel_sizes: List[int],
+        upsample_kernel_sizes: list[int],
         spk_embed_dim: int,
         gin_channels: int,
-        sr: Union[str, int],
+        sr: str | int,
     ):
         super().__init__(
             spec_channels,

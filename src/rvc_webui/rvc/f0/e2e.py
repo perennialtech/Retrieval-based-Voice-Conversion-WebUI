@@ -1,4 +1,3 @@
-from typing import Tuple
 
 import torch.nn as nn
 
@@ -10,13 +9,13 @@ class E2E(nn.Module):
         self,
         n_blocks: int,
         n_gru: int,
-        kernel_size: Tuple[int, int],
+        kernel_size: tuple[int, int],
         en_de_layers=5,
         inter_layers=4,
         in_channels=1,
         en_out_channels=16,
     ):
-        super(E2E, self).__init__()
+        super().__init__()
 
         self.unet = DeepUnet(
             kernel_size,

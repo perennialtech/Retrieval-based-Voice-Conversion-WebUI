@@ -1,6 +1,5 @@
 import json
 import locale
-import os
 from importlib.resources import files
 
 from rvc_webui.config import Singleton

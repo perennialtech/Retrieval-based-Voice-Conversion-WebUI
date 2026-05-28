@@ -1,11 +1,11 @@
-import numpy as np
-import torch
 import hashlib
 import pathlib
-
 from functools import lru_cache
+
+import numpy as np
+import torch
+from pybase16384 import decode_from_string, encode_to_string
 from scipy.fft import fft
-from pybase16384 import encode_to_string, decode_from_string
 
 from rvc_webui.config import CPUConfig
 from rvc_webui.rvc.synthesizer import get_synthesizer
@@ -92,8 +92,9 @@ def wave_hash(time_field):
 
 
 def model_hash(config, tgt_sr, net_g, if_f0, version):
-    from .pipeline import Pipeline
     from rvc_webui.rvc.utils import load_hubert
+
+    from .pipeline import Pipeline
 
     pipeline = Pipeline(tgt_sr, config)
     audio = original_audio()
