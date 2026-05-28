@@ -312,11 +312,12 @@ Run lint checks:
 uv run ruff check .
 ```
 
-Run tests:
+<!-- TODO: There are no tests -->
+<!--Run tests:
 
 ```bash
 uv run pytest
-```
+```-->
 
 Build the package:
 
