@@ -52,12 +52,12 @@ Check out our [Demo Video](https://www.bilibili.com/video/BV1pm4y1z7Gm/) here!
 
 > It is recommended to use `uv` or `venv` to manage the Python environment.
 
-> Python 3.10 is recommended. The project metadata currently supports Python >=3.10,<3.11.
+> Python 3.12 is recommended. The project metadata currently supports Python >=3.12,<3.11.
 
 > For the reason of the version limitation, please refer to this [bug](https://github.com/facebookresearch/fairseq/issues/5012).
 
 ```bash
-python --version # Recommend: 3.10
+python --version # Recommend: 3.12
 ```
 
 ### Recommended Dependency Installation with uv
@@ -71,7 +71,7 @@ python -m pip install -U uv
 Create the virtual environment:
 
 ```bash
-uv venv --python 3.10
+uv venv --python 3.12
 ```
 
 Activate it:

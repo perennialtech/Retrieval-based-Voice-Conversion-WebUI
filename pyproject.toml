@@ -3,7 +3,7 @@ name = "rvc-webui"
 version = "0.1.0"
 description = "An easy-to-use voice conversion framework based on VITS."
 readme = "README.md"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.12,<3.13"
 license = { file = "AGPL-3.0-only" }
 
 urls = { Repository = "https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI" }
@@ -79,9 +79,10 @@ rocm = [
 
 dml = [
     "onnxruntime-directml; sys_platform == 'win32'",
-    "torch-directml; sys_platform == 'win32'",
-    "torchaudio; sys_platform == 'win32'",
-    "torchvision; sys_platform == 'win32'",
+    "torch==2.4.1; sys_platform == 'win32'",
+    "torch-directml==0.2.5.dev240914; sys_platform == 'win32'",
+    "torchaudio==2.4.1; sys_platform == 'win32'",
+    "torchvision==0.19.1; sys_platform == 'win32'",
 ]
 
 gui = [
@@ -118,23 +119,31 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
+[[tool.uv.index]]
+name = "pypi-directml"
+url = "https://pypi.org/simple"
+explicit = true
+
 [tool.uv.sources]
 torch = [
-    { index = "pytorch-cu128", marker = "extra == 'cuda'" },
-    { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'cuda'" },
-    { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'rocm'" },
+    { index = "pypi-directml", marker = "extra == 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-cu128", marker = "extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'dml' and extra != 'cuda' and extra != 'cpu'" },
+    { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'dml' and extra != 'cuda' and extra != 'rocm'" },
 ]
 
 torchvision = [
-    { index = "pytorch-cu128", marker = "extra == 'cuda'" },
-    { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'cuda'" },
-    { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'rocm'" },
+    { index = "pypi-directml", marker = "extra == 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-cu128", marker = "extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'dml' and extra != 'cuda' and extra != 'cpu'" },
+    { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'dml' and extra != 'cuda' and extra != 'rocm'" },
 ]
 
 torchaudio = [
-    { index = "pytorch-cu128", marker = "extra == 'cuda'" },
-    { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'cuda'" },
-    { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'rocm'" },
+    { index = "pypi-directml", marker = "extra == 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-cu128", marker = "extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'dml' and extra != 'cuda' and extra != 'cpu'" },
+    { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'dml' and extra != 'cuda' and extra != 'rocm'" },
 ]
 
 [build-system]
