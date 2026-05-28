@@ -2,6 +2,8 @@
 
 FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu22.04
 
+COPY --from=ghcr.io/astral-sh/uv:0.11.16 /uv /uvx /usr/local/bin/
+
 EXPOSE 7865
 
 WORKDIR /app
@@ -13,19 +15,16 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         aria2 \
         build-essential \
-        curl \
         git \
-        python3.10 \
-        python3.10-dev \
-        python3.10-venv \
-        python3-pip && \
+        python3.12 \
+        python3.12-dev \
+        python3.12-venv && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
 RUN rm -rf .venv && \
-    python3.10 -m pip install --no-cache-dir --upgrade uv && \
-    uv sync --python python3.10 --extra cuda
+    uv sync --python python3.12 --extra cuda
 
 RUN aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/fumiama/RVC-Pretrained-Models/resolve/main/pretrained_v2/D40k.pth -d assets/pretrained_v2/ -o D40k.pth
 RUN aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/fumiama/RVC-Pretrained-Models/resolve/main/pretrained_v2/G40k.pth -d assets/pretrained_v2/ -o G40k.pth

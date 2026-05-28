@@ -61,10 +61,18 @@ python --version # Recommend: 3.12
 
 ### Recommended Dependency Installation with uv
 
-Install `uv` first:
+Install `uv` first with the standalone installer.
+
+On Linux/macOS:
 
 ```bash
-python -m pip install -U uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+On Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 Create the virtual environment:
@@ -135,39 +143,17 @@ By executing `run.sh` in the project root directory, you can configure the `venv
 sh ./run.sh
 ```
 
-### Manual PyTorch Installation Reference
+### PyTorch Backend Selection Reference
 
-`uv sync` is the recommended installation path. For manual installations, install PyTorch using the wheel index matching your hardware before installing the remaining dependencies.
+`uv sync` is the recommended installation path. Select the extra that matches your hardware so uv resolves the matching PyTorch distribution:
 
-CPU:
+- CPU: `uv sync --extra cpu`
+- Nvidia GPU: `uv sync --extra cuda`
+- AMD ROCm on Linux: `uv sync --extra rocm`
+- Intel GPU/XPU on Linux: `uv sync --extra xpu`
+- AMD/Intel DirectML on Windows: `uv sync --extra dml`
 
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-```
-
-Nvidia GPU:
-
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-```
-
-AMD ROCm on Linux:
-
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
-```
-
-Intel GPU/XPU on Linux:
-
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xpu
-```
-
-AMD/Intel DirectML on Windows:
-
-```bash
-pip install torch-directml torchvision torchaudio
-```
+For real-time GUI features, combine the hardware extra with `--extra gui`.
 
 ## Preparation of Other Files
 

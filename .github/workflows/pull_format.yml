@@ -35,14 +35,14 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
 
-      - name: Install Black
-        run: pip install "black[jupyter]"
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Run Black
         # run: black $(git ls-files '*.py')
-        run: black .
+        run: uvx --from "black[jupyter]" black .
