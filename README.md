@@ -40,9 +40,8 @@ An easy-to-use voice conversion framework based on VITS.
 - Training with a small amounts of data (>=10min low noise speech recommended);
 - Model fusion to change timbres (using ckpt processing tab->ckpt merge);
 - Easy-to-use WebUI;
-- UVR5 model to quickly separate vocals and instruments;
 - High-pitch Voice Extraction Algorithm [InterSpeech2023-RMVPE](#Credits) to prevent a muted sound problem. Provides the best results (significantly) and is faster with lower resource consumption than Crepe_full;
-- Nvidia CUDA, AMD ROCm, and Windows DirectML acceleration supported.
+- Nvidia CUDA, AMD ROCm, Intel XPU on Linux, and Windows DirectML acceleration supported.
 
 Check out our [Demo Video](https://www.bilibili.com/video/BV1pm4y1z7Gm/) here!
 
@@ -104,6 +103,12 @@ For AMD ROCm on Linux:
 uv sync --extra rocm
 ```
 
+For Intel GPU/XPU on Linux:
+
+```bash
+uv sync --extra xpu
+```
+
 For AMD/Intel DirectML on Windows:
 
 ```bash
@@ -150,6 +155,12 @@ AMD ROCm on Linux:
 
 ```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
+```
+
+Intel GPU/XPU on Linux:
+
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xpu
 ```
 
 AMD/Intel DirectML on Windows:
@@ -251,6 +262,22 @@ sudo usermod -aG render $USERNAME
 sudo usermod -aG video $USERNAME
 ```
 
+### 4. Intel XPU and legacy IPEX notes
+
+Intel GPU/XPU on Linux should use native PyTorch XPU support:
+
+```bash
+uv sync --extra xpu
+```
+
+Intel Extension for PyTorch/IPEX is deprecated in this project and is not part of the `uv` workflow. [Intel has announced that IPEX will reach end of life by the end of March 2026](https://pytorch-extension.intel.com/?request=platform#retirement-plan) and recommends using native PyTorch going forward.
+
+For Intel CPU systems, use the regular CPU extra:
+
+```bash
+uv sync --extra cpu
+```
+
 ## Getting Started
 
 ### Direct Launch
@@ -290,7 +317,7 @@ rvcmd packs/general/latest # RVC-Models-Downloader command
 - [Ultimate Vocal Remover](https://github.com/Anjok07/ultimatevocalremovergui)
 - [audio-slicer](https://github.com/openvpi/audio-slicer)
 - [Vocal pitch extraction:RMVPE](https://github.com/Dream-High/RMVPE)
-  - The pretrained model is trained and tested by [yxlllc](https://github.com/yxlllc/RMVPE) and [RVC-Boss](https://github.com/RVC-Boss).
+- The pretrained model is trained and tested by [yxlllc](https://github.com/yxlllc/RMVPE) and [RVC-Boss](https://github.com/RVC-Boss).
 
 ## Thanks to all contributors for their efforts
 
