@@ -3,7 +3,7 @@ name = "rvc-webui"
 version = "0.1.0"
 description = "An easy-to-use voice conversion framework based on VITS."
 readme = "README.md"
-requires-python = ">=3.10,<3.11"
+requires-python = ">=3.10,<3.13"
 license = { file = "AGPL-3.0-only" }
 
 urls = { Repository = "https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI" }
