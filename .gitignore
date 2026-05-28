@@ -12,3 +12,6 @@ xcuserdata
 /logs
 
 /assets/weights/*
+
+*.egg-info/
+.eggs/
