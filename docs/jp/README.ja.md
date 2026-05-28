@@ -1,9 +1,8 @@
 <div align="center">
 
 # Retrieval-based-Voice-Conversion-WebUI
+
 VITSに基づく使いやすい音声変換（voice changer）framework
-
-
 
 [![madewithlove](https://img.shields.io/badge/made_with-%E2%9D%A4-red?style=for-the-badge&labelColor=orange)](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI)
 
@@ -26,12 +25,12 @@ VITSに基づく使いやすい音声変換（voice changer）framework
 
 > モデルや統合パッケージをダウンロードしやすい[RVC-Models-Downloader](https://github.com/fumiama/RVC-Models-Downloader)のご利用がお勧めです。
 
-| 学習・推論 |
-| :--------: |
+|                                                           学習・推論                                                           |
+| :----------------------------------------------------------------------------------------------------------------------------: |
 | ![web](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/assets/41315874/17e48404-2627-4fad-a0ec-65f9065aeade) |
 
-| 即時音声変換 |
-| :---------: |
+|                                                              即時音声変換                                                               |
+| :-------------------------------------------------------------------------------------------------------------------------------------: |
 | ![realtime-gui](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/assets/41315874/95b36866-b92d-40c7-b5db-6a35ca5caeac) |
 
 ## はじめに
@@ -50,7 +49,9 @@ VITSに基づく使いやすい音声変換（voice changer）framework
 デモ動画は[こちら](https://www.bilibili.com/video/BV1pm4y1z7Gm/)でご覧ください。
 
 ## 環境構築
+
 ### Python バージョン制限
+
 > conda で Python 環境を管理することがお勧めです
 
 > バージョン制限の原因はこの [bug](https://github.com/facebookresearch/fairseq/issues/5012) を参照してください。
@@ -60,43 +61,50 @@ python --version # 3.8 <= Python < 3.11
 ```
 
 ### Linux/MacOS ワンクリック依存関係インストール・起動するスクリプト
+
 プロジェクトのルートディレクトリで`run.sh`を実行するだけで、`venv`仮想環境を一括設定し、必要な依存関係を自動的にインストールし、メインプログラムを起動できます。
+
 ```bash
 sh ./run.sh
 ```
 
 ### 依存関係のマニュアルインストレーション
+
 1. `pytorch`とそのコア依存関係をインストールします。すでにインストールされている場合は見送りできます。参考: https://pytorch.org/get-started/locally/
-	```bash
-	pip install torch torchvision torchaudio
-	```
+   ```bash
+   pip install torch torchvision torchaudio
+   ```
 2. もし、Windows + Nvidia Ampere (RTX30xx)の場合、#21 の経験に基づき、pytorchの対応する CUDA バージョンを指定する必要があります。
-	```bash
-	pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
-	```
+   ```bash
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
+   ```
 3. 自分の GPU に対応する依存関係をインストールします。
+
 - Nvidia GPU
-	```bash
-	pip install -r requirements/main.txt
-	```
+  ```bash
+  pip install -r requirements/main.txt
+  ```
 - AMD/Intel GPU
-	```bash
-	pip install -r requirements/dml.txt
-	```
+  ```bash
+  pip install -r requirements/dml.txt
+  ```
 - AMD ROCM (Linux)
-	```bash
-	pip install -r requirements/amd.txt
-	```
+  ```bash
+  pip install -r requirements/amd.txt
+  ```
 - Intel IPEX (Linux)
-	```bash
-	pip install -r requirements/ipex.txt
-	```
+  ```bash
+  pip install -r requirements/ipex.txt
+  ```
 
 ## その他のデータを準備
 
 ### 1. アセット
+
 > RVCは、`assets`フォルダにある幾つかのモデルリソースで推論・学習することが必要です。
+
 #### リソースの自動チェック/ダウンロード（デフォルト）
+
 > デフォルトでは、RVC は主プログラムの起動時に必要なリソースの完全性を自動的にチェックしできます。
 
 > リソースが不完全でも、プログラムは起動し続けます。
@@ -105,6 +113,7 @@ sh ./run.sh
 - 起動時のリソース完全性チェックを不要の場合は、`--nocheck`パラメータを追加してください。
 
 #### リソースのマニュアルダウンロード
+
 > すべてのリソースファイルは[Hugging Face space](https://huggingface.co/fumiama/RVC-Pretrained-Models/tree/main/)にあります。
 
 > `tools`フォルダでそれらをダウンロードするスクリプトを見つけることができます。
@@ -114,81 +123,97 @@ sh ./run.sh
 以下は、RVCが必要とするすべての事前モデルデータやその他のファイルの名前を含むリストです。
 
 - ./assets/hubert/hubert_base.pt
-	```bash
-	rvcmd assets/hubert # RVC-Models-Downloader command
-	```
+  ```bash
+  rvcmd assets/hubert # RVC-Models-Downloader command
+  ```
 - ./assets/pretrained
-	```bash
-	rvcmd assets/v1 # RVC-Models-Downloader command
-	```
+  ```bash
+  rvcmd assets/v1 # RVC-Models-Downloader command
+  ```
 - ./assets/uvr5_weights
-	```bash
+  `bash
 	rvcmd assets/uvr5 # RVC-Models-Downloader command
-	```
-v2バージョンのモデルを使用したい場合は、追加ダウンロードが必要です。
+	`
+  v2バージョンのモデルを使用したい場合は、追加ダウンロードが必要です。
 
 - ./assets/pretrained_v2
-	```bash
-	rvcmd assets/v2 # RVC-Models-Downloader command
-	```
+  ```bash
+  rvcmd assets/v2 # RVC-Models-Downloader command
+  ```
 
 ### 2. RMVPE人声音高抽出アルゴリズムに必要なファイルのダウンロード
 
 最新のRMVPE人声音高抽出アルゴリズムを使用したい場合は、音高抽出モデルをダウンロードし、`assets/rmvpe`に配置する必要があります。
 
 - [rmvpe.pt](https://huggingface.co/fumiama/RVC-Pretrained-Models/blob/main/rmvpe/rmvpe.pt)
-	```bash
-	rvcmd assets/rmvpe # RVC-Models-Downloader command
-	```
+  ```bash
+  rvcmd assets/rmvpe # RVC-Models-Downloader command
+  ```
 
 #### RMVPE(dml環境)のダウンロード（オプション、AMD/Intel GPU ユーザー）
 
 - [rmvpe.onnx](https://huggingface.co/fumiama/RVC-Pretrained-Models/blob/main/rmvpe/rmvpe.onnx)
-	```bash
-	rvcmd assets/rmvpe # RVC-Models-Downloader command
-	```
+  ```bash
+  rvcmd assets/rmvpe # RVC-Models-Downloader command
+  ```
 
 ### 3. AMD ROCM（オプション、Linuxのみ）
 
 AMDのRocm技術を基にLinuxシステムでRVCを実行したい場合は、まず[ここ](https://rocm.docs.amd.com/en/latest/deploy/linux/os-native/install.html)で必要なドライバをインストールしてください。
 
 Arch Linuxを使用している場合は、pacmanを使用して必要なドライバをインストールできます。
-````
+
+```
 pacman -S rocm-hip-sdk rocm-opencl-sdk
-````
+```
+
 一部のグラフィックカードモデルでは、以下のような環境変数を追加で設定する必要があるかもしれません（例：RX6700XT）。
-````
+
+```
 export ROCM_PATH=/opt/rocm
 export HSA_OVERRIDE_GFX_VERSION=10.3.0
-````
+```
+
 また、現在のユーザーが`render`および`video`ユーザーグループに所属していることを確認してください。
-````
+
+```
 sudo usermod -aG render $USERNAME
 sudo usermod -aG video $USERNAME
-````
+```
 
 ## 利用開始
+
 ### 直接起動
+
 以下のコマンドで WebUI を起動します
+
 ```bash
 python web.py
 ```
+
 ### Linux/MacOS
+
 ```bash
 ./run.sh
 ```
+
 ### IPEX 技術が必要な Intel GPU ユーザー向け(Linux のみ)
+
 ```bash
 source /opt/intel/oneapi/setvars.sh
 ./run.sh
 ```
+
 ### 統合パッケージの使用 (Windowsのみ)
+
 `RVC-beta.7z`をダウンロードして解凍し、`go-web.bat`をダブルクリック。
+
 ```bash
 rvcmd packs/general/latest # RVC-Models-Downloader command
 ```
 
 ## 参考プロジェクト
+
 - [ContentVec](https://github.com/auspicious3000/contentvec/)
 - [VITS](https://github.com/jaywalnut310/vits)
 - [HIFIGAN](https://github.com/jik876/hifi-gan)

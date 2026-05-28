@@ -19,7 +19,7 @@ jobs:
           sudo apt -y install ./rvcmd_linux_amd64.deb
           rm -f ./rvcmd_linux_amd64.deb
           rvcmd -notrs -w 1 -notui assets/rvc
-      
+
       - name: Calculate all Checksums
         run: go run tools/checksum/*.go
 

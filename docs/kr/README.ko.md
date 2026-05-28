@@ -1,6 +1,7 @@
 <div align="center">
 
 # Retrieval-based-Voice-Conversion-WebUI
+
 VITS 기반의 간단하고 사용하기 쉬운 음성 변환 프레임워크.
 
 [![madewithlove](https://img.shields.io/badge/made_with-%E2%9D%A4-red?style=for-the-badge&labelColor=orange)](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI)
@@ -24,12 +25,12 @@ VITS 기반의 간단하고 사용하기 쉬운 음성 변환 프레임워크.
 
 > 특정 지역에서 Hugging Face에 직접 연결할 수 없는 경우가 있으며, 성공적으로 연결해도 속도가 매우 느릴 수 있으므로, 모델/통합 패키지/도구의 일괄 다운로더를 특별히 소개합니다. [RVC-Models-Downloader](https://github.com/fumiama/RVC-Models-Downloader)
 
-| 훈련 및 추론 인터페이스 |
-| :--------: |
+|                                                    훈련 및 추론 인터페이스                                                     |
+| :----------------------------------------------------------------------------------------------------------------------------: |
 | ![web](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/assets/41315874/17e48404-2627-4fad-a0ec-65f9065aeade) |
 
-| 실시간 음성 변환 인터페이스 |
-| :---------: |
+|                                                       실시간 음성 변환 인터페이스                                                       |
+| :-------------------------------------------------------------------------------------------------------------------------------------: |
 | ![realtime-gui](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/assets/41315874/95b36866-b92d-40c7-b5db-6a35ca5caeac) |
 
 ## 소개
@@ -195,9 +196,9 @@ export HSA_OVERRIDE_GFX_VERSION=10.3.0
 
 그리고 종속 요소를 설치한 후 PyTorch를 ROCM 버전으로 덮어씁니다.
 
-````
+```
 pip 설치 토치 토치비전 토치오디오 --index-url https://download.pytorch.org/whl/rocm6.2
-````
+```
 
 동시에 현재 사용자가 `render` 및 `video` 사용자 그룹에 속해 있는지 확인하세요.
 

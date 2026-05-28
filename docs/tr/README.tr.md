@@ -1,11 +1,10 @@
-
 <div align="center">
 
 # Çekme Temelli Ses Dönüşümü Web Arayüzü
+
 VITS'e dayalı kullanımı kolay bir Ses Dönüşümü çerçevesi.
 
-[![madewithlove](https://img.shields.io/badge/made_with-%E2%9D%A4-red?style=for-the-badge&labelColor=orange
-)](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI)
+[![madewithlove](https://img.shields.io/badge/made_with-%E2%9D%A4-red?style=for-the-badge&labelColor=orange)](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI)
 
 ![moe](https://counter.seku.su/cmoe?name=rvc&theme=r34)
 
@@ -16,8 +15,9 @@ VITS'e dayalı kullanımı kolay bir Ses Dönüşümü çerçevesi.
 
 </div>
 
-------
-[**SSS (Sıkça Sorulan Sorular)**](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/wiki/SSS-(Sıkça-Sorulan-Sorular)) 
+---
+
+[**SSS (Sıkça Sorulan Sorular)**](<https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/wiki/SSS-(Sıkça-Sorulan-Sorular)>)
 
 [**İngilizce**](../../README.md) | [**中文简体**](../cn/README.cn.md) | [**日本語**](../jp/README.ja.md) | [**한국어**](../kr/README.ko.md) ([**韓國語**](../kr/README.ko.han.md)) | [**Français**](../fr/README.fr.md) | [**Türkçe**](../tr/README.tr.md) | [**Português**](../pt/README.pt.md)
 
@@ -32,22 +32,26 @@ RVC Kullanarak Gerçek Zamanlı Ses Dönüşüm Yazılımı: [w-okada/voice-chan
 > Lütfen daha büyük parametrelere, daha fazla eğitim verisine sahip RVCv3'ün ön eğitimli temel modeline göz atın; daha iyi sonuçlar, değişmeyen çıkarsama hızı ve daha az eğitim verisi gerektirir.
 
 ## Özet
+
 Bu depo aşağıdaki özelliklere sahiptir:
-+ Ton sızıntısını en aza indirmek için kaynak özelliğini en iyi çıkarımı kullanarak eğitim kümesi özelliği ile değiştirme;
-+ Kolay ve hızlı eğitim, hatta nispeten zayıf grafik kartlarında bile;
-+ Az miktarda veriyle bile nispeten iyi sonuçlar alın (>=10 dakika düşük gürültülü konuşma önerilir);
-+ Timbraları değiştirmek için model birleştirmeyi destekleme (ckpt işleme sekmesi-> ckpt birleştir);
-+ Kullanımı kolay Web arayüzü;
-+ UVR5 modelini kullanarak hızla vokalleri ve enstrümanları ayırma.
-+ En güçlü Yüksek tiz Ses Çıkarma Algoritması [InterSpeech2023-RMVPE](#Krediler) sessiz ses sorununu önlemek için kullanılır. En iyi sonuçları (önemli ölçüde) sağlar ve Crepe_full'den daha hızlı çalışır, hatta daha düşük kaynak tüketimi sağlar.
-+ AMD/Intel grafik kartları hızlandırması desteklenir.
-+ Intel ARC grafik kartları hızlandırması IPEX ile desteklenir.
+
+- Ton sızıntısını en aza indirmek için kaynak özelliğini en iyi çıkarımı kullanarak eğitim kümesi özelliği ile değiştirme;
+- Kolay ve hızlı eğitim, hatta nispeten zayıf grafik kartlarında bile;
+- Az miktarda veriyle bile nispeten iyi sonuçlar alın (>=10 dakika düşük gürültülü konuşma önerilir);
+- Timbraları değiştirmek için model birleştirmeyi destekleme (ckpt işleme sekmesi-> ckpt birleştir);
+- Kullanımı kolay Web arayüzü;
+- UVR5 modelini kullanarak hızla vokalleri ve enstrümanları ayırma.
+- En güçlü Yüksek tiz Ses Çıkarma Algoritması [InterSpeech2023-RMVPE](#Krediler) sessiz ses sorununu önlemek için kullanılır. En iyi sonuçları (önemli ölçüde) sağlar ve Crepe_full'den daha hızlı çalışır, hatta daha düşük kaynak tüketimi sağlar.
+- AMD/Intel grafik kartları hızlandırması desteklenir.
+- Intel ARC grafik kartları hızlandırması IPEX ile desteklenir.
 
 ## Ortamın Hazırlanması
+
 Aşağıdaki komutlar, Python sürümü 3.8 veya daha yüksek olan bir ortamda çalıştırılmalıdır.
 
 (Windows/Linux)
 İlk olarak ana bağımlılıkları pip aracılığıyla kurun:
+
 ```bash
 # PyTorch ile ilgili temel bağımlılıkları kurun, zaten kuruluysa atlayın
 # Referans: https://pytorch.org/get-started/locally/
@@ -58,6 +62,7 @@ pip install torch torchvision torchaudio
 ```
 
 Sonra poetry kullanarak diğer bağımlılıkları kurabilirsiniz:
+
 ```bash
 # Poetry bağımlılık yönetim aracını kurun, zaten kuruluysa atlayın
 # Referans: https://python-poetry.org/docs/#installation
@@ -68,6 +73,7 @@ poetry install
 ```
 
 Ayrıca bunları pip kullanarak da kurabilirsiniz:
+
 ```bash
 
 Nvidia grafik kartları için
@@ -76,27 +82,31 @@ Nvidia grafik kartları için
 AMD/Intel grafik kartları için：
   pip install -r requirements/dml.txt
 
-Intel ARC grafik kartları için Linux / WSL ile Python 3.10 kullanarak: 
+Intel ARC grafik kartları için Linux / WSL ile Python 3.10 kullanarak:
   pip install -r requirements/ipex.txt
 
 ```
 
-------
+---
+
 Mac kullanıcıları `run.sh` aracılığıyla bağımlılıkları kurabilir:
+
 ```bash
 sh ./run.sh
 ```
 
 ## Diğer Ön Modellerin Hazırlanması
+
 RVC'nin çıkarım ve eğitim yapması için diğer ön modellere ihtiyacı vardır.
 
 Bu ön modelleri [Huggingface alanımızdan](https://huggingface.co/fumiama/RVC-Pretrained-Models/tree/main/) indirmeniz gerekecektir.
 
 İşte RVC'nin ihtiyaç duyduğu diğer ön modellerin ve dosyaların bir listesi:
+
 ```bash
 ./assets/hubert/hubert_base.pt
 
-./assets/pretrained 
+./assets/pretrained
 
 ./assets/uvr5_weights
 
@@ -121,21 +131,28 @@ https://huggingface.co/fumiama/RVC-Pretrained-Models/blob/main/rmvpe/rmvpe.pt
 Intel ARC grafik kartları kullanıcıları Webui'yi başlatmadan önce `source /opt/intel/oneapi/setvars.sh` komutunu çalıştırmalı.
 
 Daha sonra bu komutu kullanarak Webui'yi başlatabilirsiniz:
+
 ```bash
 python web.py
 ```
+
 Windows veya macOS kullanıyorsanız, `RVC-beta.7z` dosyasını indirip çıkararak `go-web.bat`i kullanarak veya macOS'ta `sh ./run.sh` kullanarak doğrudan RVC'yi kullanabilirsiniz.
 
 ## Krediler
-+ [ContentVec](https://github.com/auspicious3000/contentvec/)
-+ [VITS](https://github.com/jaywalnut310/vits)
-+ [HIFIGAN](https://github.com/jik876/hifi-gan)
-+ [Gradio](https://github.com/gradio-app/gradio)
-+ [Ultimate Vocal Remover](https://github.com/Anjok07/ultimatevocalremovergui)
-+ [audio-slicer](https://github.com/openvpi/audio-slicer)
-+ [Vokal ton çıkarma:RMVPE](https://github.com/Dream-High/RMVPE)
-  + Ön eğitimli model [yxlllc](https://github.com/yxlllc/RMVPE) ve [RVC-Boss](https://github.com/RVC-Boss) tarafından eğitilip test edilmiştir.
-  
+
+- [ContentVec](https://github.com/auspicious3000/contentvec/)
+- [VITS](https://github.com/jaywalnut310/vits)
+- [HIFIGAN](https://github.com/jik876/hifi-gan)
+- [Gradio](https://github.com/gradio-app/gradio)
+- [Ultimate Vocal Remover](https://github.com/Anjok07/ultimatevocalremovergui)
+- [audio-slicer](https://github.com/openvpi/audio-slicer)
+- [Vokal ton çıkarma:RMVPE](https://github.com/Dream-High/RMVPE)
+  - Ön eğitimli model [yxlllc](https://github.com/yxlllc/RMVPE) ve [RVC-Boss](https://github.com/RVC-Boss) tarafından eğitilip test edilmiştir.
+
 ## Katkıda Bulunan Herkese Teşekkürler
+
 [![contributors](https://contrib.rocks/image?repo=fumiama/Retrieval-based-Voice-Conversion-WebUI)](https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI/graphs/contributors)
+
+```
+
 ```
