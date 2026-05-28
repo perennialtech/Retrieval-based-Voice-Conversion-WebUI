@@ -56,6 +56,12 @@ dependencies = [
     "werkzeug>=2.2.3",
 ]
 
+[project.scripts]
+rvc-web = "rvc_webui.main_web:main"
+rvc-gui = "rvc_webui.main_gui:main"
+rvc-infer = "rvc_webui.cli.infer_cli:main"
+rvc-infer-batch = "rvc_webui.cli.infer_batch_rvc:main"
+
 [project.optional-dependencies]
 cpu = [
     "onnxruntime",
@@ -169,8 +175,11 @@ requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["rvc*", "infer*", "configs*", "i18n*"]
+where = ["src"]
+include = ["rvc_webui*"]
 exclude = ["assets*", "logs*", "TEMP*", "weights*"]
 
 [tool.setuptools.package-data]
-i18n = ["locale/*.json"]
+"rvc_webui.i18n" = ["locale/*.json"]
+"rvc_webui.infer.modules.vc" = ["*.npz"]
+"rvc_webui.infer.lib.uvr5_pack" = ["**/*.json"]

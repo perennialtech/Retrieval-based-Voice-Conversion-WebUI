@@ -82,7 +82,7 @@ jobs:
         run: |
           mkdir -p logs/mi-test
           touch logs/mi-test/preprocess.log
-          uv run python infer/modules/train/preprocess.py logs/mute/0_gt_wavs 48000 8 logs/mi-test True 3.7
+          uv run python -m rvc_webui.train.preprocess logs/mute/0_gt_wavs 48000 8 logs/mi-test True 3.7
           touch logs/mi-test/extract_f0_feature.log
-          uv run python infer/modules/train/extract_f0_print.py logs/mi-test $(nproc) pm cpu False
-          uv run python infer/modules/train/extract_feature_print.py cpu 1 0 0 logs/mi-test v1 True
+          uv run python -m rvc_webui.train.extract_f0_print logs/mi-test $(nproc) pm cpu False
+          uv run python -m rvc_webui.train.extract_feature_print cpu 1 0 0 logs/mi-test v1 True

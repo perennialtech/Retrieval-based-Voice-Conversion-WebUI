@@ -269,13 +269,13 @@ uv sync --extra cpu
 Use the following command to start the WebUI.
 
 ```bash
-python web.py
+rvc-web
 ```
 
 When using `uv`, you can also launch through the managed environment:
 
 ```bash
-uv run python web.py
+uv run rvc-web
 ```
 
 ### Linux/MacOS

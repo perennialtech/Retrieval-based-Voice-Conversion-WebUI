@@ -21,18 +21,12 @@ import numpy as np
 import torch.nn.functional as F
 from fairseq import checkpoint_utils
 
-# from models import SynthesizerTrn256#hifigan_nonsf
-# from lib.infer_pack.models import SynthesizerTrn256NSF as SynthesizerTrn256#hifigan_nsf
-from rvc.layers.synthesizers import (
+from rvc_webui.rvc.layers.synthesizers import (
     SynthesizerTrnMs256NSFsid as SynthesizerTrn256,
 )  # hifigan_nsf
 from scipy.io import wavfile
 
-# from lib.infer_pack.models import SynthesizerTrnMs256NSFsid_sim as SynthesizerTrn256#hifigan_nsf
-# from models import SynthesizerTrn256NSFsim as SynthesizerTrn256#hifigan_nsf
-# from models import SynthesizerTrn256NSFsimFlow as SynthesizerTrn256#hifigan_nsf
-
-from infer.lib.audio import load_audio
+from rvc_webui.infer.lib.audio import load_audio
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_path = r"E:\codes\py39\vits_vc_gpu_train\assets\hubert\hubert_base.pt"  #

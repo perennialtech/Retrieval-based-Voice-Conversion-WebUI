@@ -17,8 +17,8 @@ jobs:
 
       - name: Run locale generation
         run: |
-          python i18n/scan_i18n.py
-          cd i18n
+          python src/rvc_webui/i18n/scan_i18n.py
+          cd src/rvc_webui/i18n
           python locale_diff.py
 
       - name: Commit back

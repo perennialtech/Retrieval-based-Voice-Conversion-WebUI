@@ -73,6 +73,4 @@ RUN --mount=type=cache,target=/root/.cache/uv,sharing=locked \
         ${extra_flags}; \
     mkdir -p assets logs opt
 
-EXPOSE 7865
-
-CMD ["python", "web.py", "--listen", "--noautoopen", "--update"]
+CMD ["rvc-web", "--listen", "--noautoopen", "--update"]

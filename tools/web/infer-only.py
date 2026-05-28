@@ -1,12 +1,13 @@
 import logging
 import os
+from pathlib import Path
 
 import gradio as gr
 from dotenv import load_dotenv
 
-from configs import Config
-from i18n.i18n import I18nAuto
-from infer.modules.vc import VC
+from rvc_webui.config import Config
+from rvc_webui.i18n.i18n import I18nAuto
+from rvc_webui.infer.modules.vc import VC
 
 logging.getLogger("numba").setLevel(logging.WARNING)
 logging.getLogger("markdown_it").setLevel(logging.WARNING)
@@ -17,13 +18,14 @@ logger = logging.getLogger(__name__)
 i18n = I18nAuto()
 logger.info(i18n)
 
-load_dotenv()
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+load_dotenv(PROJECT_ROOT / ".env")
 config = Config()
 vc = VC(config)
 
-weight_root = os.getenv("weight_root")
-weight_uvr5_root = os.getenv("weight_uvr5_root")
-index_root = os.getenv("index_root")
+weight_root = PROJECT_ROOT / os.getenv("weight_root", "assets/weights")
+weight_uvr5_root = PROJECT_ROOT / os.getenv("weight_uvr5_root", "assets/uvr5_weights")
+index_root = PROJECT_ROOT / os.getenv("index_root", "logs")
 names = []
 hubert_model = None
 for name in os.listdir(weight_root):

@@ -49,4 +49,4 @@ done
 echo "Syncing dependencies with uv using extras: ${RVC_EXTRAS}"
 uv sync $sync_args
 
-uv run python web.py --pycmd python
+uv run rvc-web --pycmd python
