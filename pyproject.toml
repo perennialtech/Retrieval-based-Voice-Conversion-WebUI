@@ -38,7 +38,7 @@ dependencies = [
     "pybase16384",
     "pydub>=0.25.1",
     "python-dotenv>=1.0.0",
-    "pyworld==0.3.2",
+    "pyworld>=0.3.2",
     "pyyaml>=6.0",
     "resampy>=0.4.2",
     "scikit-learn",
