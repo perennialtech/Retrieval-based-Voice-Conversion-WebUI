@@ -1,13 +1,15 @@
 import json
 import locale
 import os
+from importlib.resources import files
+
 from configs import Singleton
 
 
 def load_language_list(language):
-    with open(f"./i18n/locale/{language}.json", "r", encoding="utf-8") as f:
-        language_list = json.load(f)
-    return language_list
+    path = files("i18n").joinpath("locale", f"{language}.json")
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 class I18nAuto(metaclass=Singleton):
