@@ -1,0 +1,15 @@
+services:
+  rvc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${RVC_PORT:-7865}:7865"
+    volumes:
+      - ./assets:/app/assets
+      - ./logs:/app/logs
+      - ./opt:/app/opt
+      # you can use this folder in order to provide your dataset for model training
+      # - ./dataset:/app/dataset
+    init: true
+    gpus: all
