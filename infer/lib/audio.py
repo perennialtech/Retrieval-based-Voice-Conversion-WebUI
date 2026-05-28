@@ -345,25 +345,28 @@ class AudioIoProcess(Process):
                 self.stop_evt.wait()
                 self.out_buf.fill(0.0)
         else:
-            with sd.InputStream(
-                samplerate=self.sample_rate,
-                channels=self.channels,
-                dtype=self.buf_dtype,
-                latency="low",
-                extra_settings=(
-                    exclusive_settings if self.is_input_wasapi_exclusive else None
-                ),
-                callback=input_callback,
-            ) as si, sd.OutputStream(
-                samplerate=self.sample_rate,
-                channels=self.channels,
-                dtype=self.buf_dtype,
-                latency="low",
-                extra_settings=(
-                    exclusive_settings if self.is_output_wasapi_exclusive else None
-                ),
-                callback=output_callback,
-            ) as so:
+            with (
+                sd.InputStream(
+                    samplerate=self.sample_rate,
+                    channels=self.channels,
+                    dtype=self.buf_dtype,
+                    latency="low",
+                    extra_settings=(
+                        exclusive_settings if self.is_input_wasapi_exclusive else None
+                    ),
+                    callback=input_callback,
+                ) as si,
+                sd.OutputStream(
+                    samplerate=self.sample_rate,
+                    channels=self.channels,
+                    dtype=self.buf_dtype,
+                    latency="low",
+                    extra_settings=(
+                        exclusive_settings if self.is_output_wasapi_exclusive else None
+                    ),
+                    callback=output_callback,
+                ) as so,
+            ):
                 self.latency.value = si.latency[-1] + so.latency[-1]
                 self.stop_evt.wait()
                 self.out_buf.fill(0.0)
