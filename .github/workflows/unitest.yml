@@ -5,7 +5,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10"]
         os: [ubuntu-latest]
       fail-fast: true
 
@@ -57,7 +57,7 @@ jobs:
         sudo rm -rf /opt/hostedtoolcache/Zephyr
         sudo rm -rf /opt/hostedtoolcache/zig
         sudo rm -rf /opt/hostedtoolcache/zulu
-        sudo rm -rf /opt/hostedtoolcache/azcopy  
+        sudo rm -rf /opt/hostedtoolcache/azcopy
 
         sudo -E apt-get update
         sudo -E apt-get -y autoremove --purge
@@ -72,17 +72,14 @@ jobs:
       run: |
         wget https://github.com/fumiama/RVC-Models-Downloader/releases/download/v0.2.11/rvcmd_linux_amd64.deb
         sudo apt -y install ./rvcmd_linux_amd64.deb
-        pip install --force pip==24.0 # fix fairseq installing issue https://github.com/facebookresearch/fairseq/issues/5552
-        python -m pip install --upgrade setuptools
-        python -m pip install --upgrade wheel
-        pip install torch torchvision torchaudio
-        pip install -r requirements/cpu.txt
+        python -m pip install --upgrade uv
+        uv sync --extra cpu
         rvcmd -notrs -w 1 -notui assets/rvc
     - name: Test step 1 & 2
       run: |
         mkdir -p logs/mi-test
         touch logs/mi-test/preprocess.log
-        python infer/modules/train/preprocess.py logs/mute/0_gt_wavs 48000 8 logs/mi-test True 3.7
+        uv run python infer/modules/train/preprocess.py logs/mute/0_gt_wavs 48000 8 logs/mi-test True 3.7
         touch logs/mi-test/extract_f0_feature.log
-        python infer/modules/train/extract_f0_print.py logs/mi-test $(nproc) pm cpu False
-        python infer/modules/train/extract_feature_print.py cpu 1 0 0 logs/mi-test v1 True
+        uv run python infer/modules/train/extract_f0_print.py logs/mi-test $(nproc) pm cpu False
+        uv run python infer/modules/train/extract_feature_print.py cpu 1 0 0 logs/mi-test v1 True

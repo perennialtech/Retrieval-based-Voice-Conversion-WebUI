@@ -1,27 +1,46 @@
 #!/bin/sh
 
-set -fa
+set -e
 
-# Check if Python is installed
-if ! command -v python; then
-  echo "Python not found. Please install Python using your package manager or via PyEnv."
-  exit 1
+export PATH="${HOME}/.local/bin:${PATH}"
+
+if command -v python >/dev/null 2>&1; then
+	pycmd="python"
+elif command -v python3 >/dev/null 2>&1; then
+	pycmd="python3"
+else
+	echo "Python not found. Please install Python using your package manager or via PyEnv."
+	exit 1
 fi
 
-requirements_file="requirements/main.txt"
-venv_path=".venv"
-
-if [[ ! -d "${venv_path}" ]]; then
-  echo "Creating venv..."
-
-  python -m venv "${venv_path}"
-  source "${venv_path}/bin/activate"
-
-  # Check if required packages are up-to-date
-  pip install --upgrade -r "${requirements_file}"
+if ! command -v uv >/dev/null 2>&1; then
+	echo "uv not found. Installing uv..."
+	"$pycmd" -m pip install --upgrade uv || "$pycmd" -m pip install --user --upgrade uv
 fi
-echo "Activating venv..."
-source "${venv_path}/bin/activate"
 
-# Run the main script
-python web.py --pycmd python
+if ! command -v uv >/dev/null 2>&1; then
+	echo "uv installation failed. Please install uv manually:"
+	echo "  python -m pip install -U uv"
+	exit 1
+fi
+
+case "$(uname -s)" in
+Darwin)
+	default_extras="cpu"
+	;;
+*)
+	default_extras="cuda"
+	;;
+esac
+
+RVC_EXTRAS="${RVC_EXTRAS:-$default_extras}"
+sync_args=""
+
+for extra in $RVC_EXTRAS; do
+	sync_args="$sync_args --extra $extra"
+done
+
+echo "Syncing dependencies with uv using extras: ${RVC_EXTRAS}"
+uv sync $sync_args
+
+uv run python web.py --pycmd python

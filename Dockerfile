@@ -1,34 +1,31 @@
 # syntax=docker/dockerfile:1
 
-FROM nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
+FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu22.04
 
 EXPOSE 7865
 
 WORKDIR /app
 
-# Install dependenceis to add PPAs
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/app/.venv/bin:${PATH}"
+
 RUN apt-get update && \
-    apt-get install -y -qq aria2 && apt clean && \
-    apt-get install -y software-properties-common && \
-    apt-get clean && \
+    apt-get install -y --no-install-recommends \
+        aria2 \
+        build-essential \
+        curl \
+        git \
+        python3.10 \
+        python3.10-dev \
+        python3.10-venv \
+        python3-pip && \
     rm -rf /var/lib/apt/lists/*
-# Add the deadsnakes PPA to get Python 3.9
-RUN add-apt-repository ppa:deadsnakes/ppa
-
-# Install Python 3.9 and pip
-RUN apt-get update && \
-    apt-get install -y build-essential python-dev python3-dev python3.9-distutils python3.9-dev python3.9 curl && \
-    apt-get clean && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1 && \
-    curl https://bootstrap.pypa.io/get-pip.py | python3.9
-
-# Set Python 3.9 as the default
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 
 COPY . .
 
-RUN python3 -m pip install --upgrade pip>=24.0
-RUN python3 -m pip install --no-cache-dir -r requirements/main.txt
+RUN rm -rf .venv && \
+    python3.10 -m pip install --no-cache-dir --upgrade uv && \
+    uv sync --python python3.10 --extra cuda
 
 RUN aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/fumiama/RVC-Pretrained-Models/resolve/main/pretrained_v2/D40k.pth -d assets/pretrained_v2/ -o D40k.pth
 RUN aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/fumiama/RVC-Pretrained-Models/resolve/main/pretrained_v2/G40k.pth -d assets/pretrained_v2/ -o G40k.pth
@@ -44,4 +41,4 @@ RUN aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co
 
 VOLUME [ "/app/weights", "/app/opt" ]
 
-CMD ["python3", "web.py"]
+CMD ["python", "web.py"]
