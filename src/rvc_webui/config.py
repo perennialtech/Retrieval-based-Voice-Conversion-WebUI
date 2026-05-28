@@ -6,7 +6,7 @@ import sys
 from multiprocessing import cpu_count
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # TODO: move device selection into rvc
 import logging
