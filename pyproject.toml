@@ -58,31 +58,31 @@ dependencies = [
 [project.optional-dependencies]
 cpu = [
     "onnxruntime",
-    "torch",
-    "torchaudio",
-    "torchvision",
+    "torch>=2.6",
+    "torchaudio>=2.6",
+    "torchvision>=0.21",
 ]
 
 cuda = [
     "onnxruntime-gpu; sys_platform != 'darwin'",
-    "torch; sys_platform != 'darwin'",
-    "torchaudio; sys_platform != 'darwin'",
-    "torchvision; sys_platform != 'darwin'",
+    "torch>=2.6; sys_platform != 'darwin'",
+    "torchaudio>=2.6; sys_platform != 'darwin'",
+    "torchvision>=0.21; sys_platform != 'darwin'",
 ]
 
 rocm = [
     "onnxruntime; sys_platform == 'linux'",
-    "torch; sys_platform == 'linux'",
-    "torchaudio; sys_platform == 'linux'",
-    "torchvision; sys_platform == 'linux'",
+    "torch>=2.6; sys_platform == 'linux'",
+    "torchaudio>=2.6; sys_platform == 'linux'",
+    "torchvision>=0.21; sys_platform == 'linux'",
 ]
 
 dml = [
     "onnxruntime-directml; sys_platform == 'win32'",
-    "torch==2.4.1; sys_platform == 'win32'",
-    "torch-directml==0.2.5.dev240914; sys_platform == 'win32'",
-    "torchaudio==2.4.1; sys_platform == 'win32'",
-    "torchvision==0.19.1; sys_platform == 'win32'",
+    "torch>=2.6; sys_platform == 'win32'",
+    "torch-directml; sys_platform == 'win32'",
+    "torchaudio>=2.6; sys_platform == 'win32'",
+    "torchvision>=0.21; sys_platform == 'win32'",
 ]
 
 gui = [
