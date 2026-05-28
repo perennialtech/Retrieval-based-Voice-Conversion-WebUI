@@ -51,10 +51,12 @@ Check out our [Demo Video](https://www.bilibili.com/video/BV1pm4y1z7Gm/) here!
 
 > It is recommended to use `uv` or `venv` to manage the Python environment.
 
+> This project is tested against Python 3.12. Use Python 3.12 unless you are intentionally validating another version.
+
 > For the reason of the version limitation, please refer to this [bug](https://github.com/facebookresearch/fairseq/issues/5012).
 
 ```bash
-python --version # Recommend: 3.12
+python --version # Required: 3.12
 ```
 
 ### Recommended Dependency Installation with uv
@@ -91,47 +93,51 @@ On Windows:
 .venv\Scripts\activate
 ```
 
+Choose exactly one hardware dependency extra. The hardware extras are mutually exclusive.
+
 Install the dependency set matching your hardware:
 
 ```bash
-uv sync --extra cuda
+uv sync --frozen --extra cuda
 ```
 
 For CPU:
 
 ```bash
-uv sync --extra cpu
+uv sync --frozen --extra cpu
 ```
 
 For AMD ROCm on Linux:
 
 ```bash
-uv sync --extra rocm
+uv sync --frozen --extra rocm
 ```
 
 For Intel GPU/XPU on Linux:
 
 ```bash
-uv sync --extra xpu
+uv sync --frozen --extra xpu
 ```
 
 For AMD/Intel DirectML on Windows:
 
 ```bash
-uv sync --extra dml
+uv sync --frozen --extra dml
 ```
 
 For real-time GUI features, add the `gui` extra:
 
 ```bash
-uv sync --extra cuda --extra gui
+uv sync --frozen --extra cuda --extra gui
 ```
 
 or, for DirectML GUI:
 
 ```bash
-uv sync --extra dml --extra gui
+uv sync --frozen --extra dml --extra gui
 ```
+
+When intentionally updating dependencies, omit `--frozen`, then commit the updated `uv.lock`.
 
 ### Linux/MacOS One-click Dependency Installation & Startup Script
 
@@ -143,13 +149,13 @@ sh ./run.sh
 
 ### PyTorch Backend Selection Reference
 
-`uv sync` is the recommended installation path. Select the extra that matches your hardware so uv resolves the matching PyTorch distribution:
+`uv sync` is the recommended installation path. Select exactly one hardware extra so uv resolves the matching PyTorch distribution:
 
-- CPU: `uv sync --extra cpu`
-- Nvidia GPU: `uv sync --extra cuda`
-- AMD ROCm on Linux: `uv sync --extra rocm`
-- Intel GPU/XPU on Linux: `uv sync --extra xpu`
-- AMD/Intel DirectML on Windows: `uv sync --extra dml`
+- CPU: `uv sync --frozen --extra cpu`
+- Nvidia GPU: `uv sync --frozen --extra cuda`
+- AMD ROCm on Linux: `uv sync --frozen --extra rocm`
+- Intel GPU/XPU on Linux: `uv sync --frozen --extra xpu`
+- AMD/Intel DirectML on Windows: `uv sync --frozen --extra dml`
 
 For real-time GUI features, combine the hardware extra with `--extra gui`.
 
@@ -251,7 +257,7 @@ sudo usermod -aG video $USERNAME
 Intel GPU/XPU on Linux should use native PyTorch XPU support:
 
 ```bash
-uv sync --extra xpu
+uv sync --frozen --extra xpu
 ```
 
 Intel Extension for PyTorch/IPEX is deprecated in this project and is not part of the `uv` workflow. [Intel has announced that IPEX will reach end of life by the end of March 2026](https://pytorch-extension.intel.com/?request=platform#retirement-plan) and recommends using native PyTorch going forward.
@@ -259,7 +265,7 @@ Intel Extension for PyTorch/IPEX is deprecated in this project and is not part o
 For Intel CPU systems, use the regular CPU extra:
 
 ```bash
-uv sync --extra cpu
+uv sync --frozen --extra cpu
 ```
 
 ## Getting Started
@@ -291,6 +297,40 @@ Download and unzip `RVC-beta.7z`. After unzipping, double-click `go-web.bat` to 
 ```bash
 rvcmd packs/general/latest # RVC-Models-Downloader command
 ```
+
+## Development
+
+Install development dependencies together with one hardware backend:
+
+```bash
+uv sync --frozen --extra cpu --group dev
+```
+
+Run lint checks:
+
+```bash
+uv run ruff check .
+```
+
+Run tests:
+
+```bash
+uv run pytest
+```
+
+Build the package:
+
+```bash
+uv build
+```
+
+Check the built distributions:
+
+```bash
+uv run twine check dist/*
+```
+
+When updating dependencies intentionally, run the relevant `uv sync` command without `--frozen`, verify the environment, and commit the updated `uv.lock`.
 
 ## Credits
 
