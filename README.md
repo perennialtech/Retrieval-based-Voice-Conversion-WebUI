@@ -52,7 +52,7 @@ Check out our [Demo Video](https://www.bilibili.com/video/BV1pm4y1z7Gm/) here!
 
 > It is recommended to use `uv` or `venv` to manage the Python environment.
 
-> Python 3.12 is recommended. The project metadata currently supports Python >=3.12,<3.13.
+> Python 3.12 is recommended.
 
 > For the reason of the version limitation, please refer to this [bug](https://github.com/facebookresearch/fairseq/issues/5012).
 

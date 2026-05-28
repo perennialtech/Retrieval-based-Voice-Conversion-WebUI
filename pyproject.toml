@@ -3,7 +3,7 @@ name = "rvc-webui"
 version = "0.1.0"
 description = "An easy-to-use voice conversion framework based on VITS."
 readme = "README.md"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.9,<3.13"
 license = "AGPL-3.0-only"
 license-files = ["LICENSE"]
 
@@ -95,7 +95,6 @@ gui = [
 ]
 
 [tool.uv]
-package = false
 conflicts = [
     [
         { extra = "cpu" },
