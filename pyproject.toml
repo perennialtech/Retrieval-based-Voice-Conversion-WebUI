@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "An easy-to-use voice conversion framework based on VITS."
 readme = "README.md"
 requires-python = ">=3.10,<3.11"
-license = { file = "LICENSE" }
+license = { file = "AGPL-3.0-only" }
 
 urls = { Repository = "https://github.com/fumiama/Retrieval-based-Voice-Conversion-WebUI" }
 
@@ -136,3 +136,11 @@ torchaudio = [
     { index = "pytorch-rocm62", marker = "extra == 'rocm' and extra != 'cuda'" },
     { index = "pytorch-cpu", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'rocm'" },
 ]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["rvc*", "infer*", "configs*"]
+exclude = ["assets*", "logs*", "TEMP*", "weights*"]
