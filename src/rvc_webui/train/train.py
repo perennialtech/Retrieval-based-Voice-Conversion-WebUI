@@ -632,9 +632,7 @@ def train_and_evaluate(
                     }
                 )
 
-                scalar_dict.update(
-                    {f"loss/g/{i}": v for i, v in enumerate(losses_gen)}
-                )
+                scalar_dict.update({f"loss/g/{i}": v for i, v in enumerate(losses_gen)})
                 scalar_dict.update(
                     {f"loss/d_r/{i}": v for i, v in enumerate(losses_disc_r)}
                 )
