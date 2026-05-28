@@ -125,6 +125,9 @@ name = "pypi-directml"
 url = "https://pypi.org/simple"
 explicit = true
 
+# NOTE: `uv` validates `[tool.uv.sources]` markers independently and
+# does not use `[tool.uv].conflicts` to prove exclusivity, so the
+# verbose `extra == 'cuda' and extra != 'rocm' ...` form is intentional.
 [tool.uv.sources]
 torch = [
     { index = "pypi-directml", marker = "extra == 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
