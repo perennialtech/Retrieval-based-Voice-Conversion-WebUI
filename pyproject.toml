@@ -80,10 +80,9 @@ rocm = [
 
 dml = [
     "onnxruntime-directml; sys_platform == 'win32'",
-    "torch>=2.6; sys_platform == 'win32'",
     "torch-directml; sys_platform == 'win32'",
-    "torchaudio>=2.6; sys_platform == 'win32'",
-    "torchvision>=0.21; sys_platform == 'win32'",
+    "torchvision; sys_platform == 'win32'",
+    "torchaudio; sys_platform == 'win32'",
 ]
 
 gui = [
