@@ -81,7 +81,9 @@ Create the virtual environment:
 uv venv --python 3.12
 ```
 
-Activate it:
+Activate it.
+
+On Linux/macOS:
 
 ```bash
 source .venv/bin/activate
@@ -95,47 +97,20 @@ On Windows:
 
 Choose exactly one hardware dependency extra. The hardware extras are mutually exclusive.
 
-Install the dependency set matching your hardware:
+| Hardware target        | Platform            |  Extra | Install command                 |
+| ---------------------- | ------------------- | -----: | ------------------------------- |
+| NVIDIA CUDA GPU        | Linux/Windows       | `cuda` | `uv sync --frozen --extra cuda` |
+| CPU only               | Linux/macOS/Windows |  `cpu` | `uv sync --frozen --extra cpu`  |
+| AMD ROCm GPU           | Linux               | `rocm` | `uv sync --frozen --extra rocm` |
+| Intel GPU/XPU          | Linux               |  `xpu` | `uv sync --frozen --extra xpu`  |
+| AMD/Intel DirectML GPU | Windows             |  `dml` | `uv sync --frozen --extra dml`  |
 
-```bash
-uv sync --frozen --extra cuda
-```
+For real-time GUI features, add the `gui` extra alongside exactly one hardware extra:
 
-For CPU:
-
-```bash
-uv sync --frozen --extra cpu
-```
-
-For AMD ROCm on Linux:
-
-```bash
-uv sync --frozen --extra rocm
-```
-
-For Intel GPU/XPU on Linux:
-
-```bash
-uv sync --frozen --extra xpu
-```
-
-For AMD/Intel DirectML on Windows:
-
-```bash
-uv sync --frozen --extra dml
-```
-
-For real-time GUI features, add the `gui` extra:
-
-```bash
-uv sync --frozen --extra cuda --extra gui
-```
-
-or, for DirectML GUI:
-
-```bash
-uv sync --frozen --extra dml --extra gui
-```
+| Hardware target          | GUI install command                         |
+| ------------------------ | ------------------------------------------- |
+| NVIDIA CUDA GPU with GUI | `uv sync --frozen --extra cuda --extra gui` |
+| DirectML with GUI        | `uv sync --frozen --extra dml --extra gui`  |
 
 When intentionally updating dependencies, omit `--frozen`, then commit the updated `uv.lock`.
 
