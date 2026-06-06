@@ -59,17 +59,16 @@ class Pipeline:
         self._torch_device = torch.device(self.device)
 
         self._faiss_gpu_resources = None
-        # NOTE: throws `AssertionError: GPU tensor on CPU index not allowed`.
-        # if self._torch_device.type == "cuda":
-        #     try:
-        #         import faiss.contrib.torch_utils  # noqa: F401
-        #
-        #         self._faiss_gpu_resources = faiss.StandardGpuResources()
-        #     except Exception:
-        #         logger.debug(
-        #             "FAISS GPU is unavailable; using CPU FAISS.",
-        #             exc_info=True,
-        #         )
+        if self._torch_device.type == "cuda":
+            try:
+                import faiss.contrib.torch_utils  # noqa: F401
+
+                self._faiss_gpu_resources = faiss.StandardGpuResources()
+            except Exception:
+                logger.debug(
+                    "FAISS GPU is unavailable; using CPU FAISS.",
+                    exc_info=True,
+                )
 
         self.f0_gen = Generator(
             Path(os.environ["rmvpe_root"]),
@@ -116,10 +115,13 @@ class Pipeline:
                     if self._torch_device.index is not None
                     else torch.cuda.current_device()
                 )
+                options = faiss.GpuClonerOptions()
+                options.useFloat16 = bool(self.is_half)
                 gpu_index = faiss.index_cpu_to_gpu(
                     self._faiss_gpu_resources,
                     device_id,
                     cpu_index,
+                    options,
                 )
                 dtype = torch.float16 if self.is_half else torch.float32
                 big_npy = torch.as_tensor(big_npy, device=self.device, dtype=dtype)
@@ -243,19 +245,13 @@ class Pipeline:
             feats = feats.to(feats0.dtype)
         p_len = torch.tensor([p_len], device=self.device).long()
         with torch.inference_mode():
-            audio1 = (
-                net_g.infer(
-                    feats,
-                    p_len,
-                    sid,
-                    pitch=pitch,
-                    pitchf=pitchf,
-                )[0, 0]
-                .detach()
-                .cpu()
-                .float()
-                .numpy()
-            )
+            audio1 = net_g.infer(
+                feats,
+                p_len,
+                sid,
+                pitch=pitch,
+                pitchf=pitchf,
+            )[0, 0].detach()
         del feats, p_len, padding_mask
         t2 = time()
         times[0] += t1 - t0
@@ -411,7 +407,8 @@ class Pipeline:
                     protect,
                 )[self.t_pad_tgt : -self.t_pad_tgt]
             )
-        audio_opt = np.concatenate(audio_opt)
+        audio_opt = torch.cat(audio_opt).float()
+        audio_opt = audio_opt.cpu().numpy()
         if rms_mix_rate != 1:
             audio_opt = change_rms(audio, 16000, audio_opt, tgt_sr, rms_mix_rate)
         if tgt_sr != resample_sr >= 16000:

@@ -7,7 +7,8 @@ from rvc_webui.rvc.layers.synthesizers import SynthesizerTrnMsNSFsid
 from rvc_webui.rvc.utils import FileLike
 
 
-def get_synthesizer(cpt: OrderedDict, device=torch.device("cpu")):
+def get_synthesizer(cpt: OrderedDict, device=torch.device("cpu"), is_half=False):
+    device = torch.device(device)
     cpt["config"][-3] = cpt["weight"]["emb_g.weight"].shape[0]
     if_f0 = cpt.get("f0", 1)
     version = cpt.get("version", "v1")
@@ -22,16 +23,21 @@ def get_synthesizer(cpt: OrderedDict, device=torch.device("cpu")):
     )
     del net_g.enc_q
     net_g.load_state_dict(cpt["weight"], strict=False)
-    net_g = net_g.float()
-    net_g.eval().to(device)
+    net_g.eval()
+    if is_half and device.type == "cuda":
+        net_g = net_g.half()
+    else:
+        net_g = net_g.float()
+    net_g = net_g.to(device)
     net_g.remove_weight_norm()
     return net_g, cpt
 
 
-def load_synthesizer(pth_path: FileLike, device=torch.device("cpu")):  # type: ignore
+def load_synthesizer(pth_path: FileLike, device=torch.device("cpu"), is_half=False):  # type: ignore
     return get_synthesizer(
         torch.load(pth_path, map_location=torch.device("cpu"), weights_only=True),
         device,
+        is_half,
     )
 
 
@@ -50,10 +56,8 @@ def synthesizer_jit_export(
         device = torch.device("cuda:0")
     from rvc_webui.rvc.synthesizer import load_synthesizer
 
-    model, cpt = load_synthesizer(model_path, device)
+    model, cpt = load_synthesizer(model_path, device, is_half)
     assert isinstance(cpt, dict)
-    if is_half and torch.device(device).type == "cuda":
-        model = model.half()
     model.forward = model.infer
     inputs = None
     if mode == "trace":

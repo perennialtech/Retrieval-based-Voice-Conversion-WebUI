@@ -23,6 +23,7 @@ def get_index_path_from_model(sid):
 
 
 def load_hubert(device, is_half):
+    device = torch.device(device)
     with torch.serialization.safe_globals([data.dictionary.Dictionary]):
         models, _, _ = checkpoint_utils.load_model_ensemble_and_task(
             ["assets/hubert/hubert_base.pt"],
@@ -30,7 +31,7 @@ def load_hubert(device, is_half):
         )
     hubert_model = models[0]
     hubert_model = hubert_model.to(device)
-    if is_half:
+    if is_half and device.type == "cuda":
         hubert_model = hubert_model.half()
     else:
         hubert_model = hubert_model.float()
