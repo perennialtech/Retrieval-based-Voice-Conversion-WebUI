@@ -56,6 +56,19 @@ class Pipeline:
         self.t_center = self.sr * self.x_center  # 查询切点位置
         self.t_max = self.sr * self.x_max  # 免查询时长阈值
         self.device = config.device
+        self._torch_device = torch.device(self.device)
+
+        self._faiss_gpu_resources = None
+        if self._torch_device.type == "cuda":
+            try:
+                import faiss.contrib.torch_utils  # noqa: F401
+
+                self._faiss_gpu_resources = faiss.StandardGpuResources()
+            except Exception:
+                logger.debug(
+                    "FAISS GPU is unavailable; using CPU FAISS.",
+                    exc_info=True,
+                )
 
         self.f0_gen = Generator(
             Path(os.environ["rmvpe_root"]),
@@ -77,16 +90,44 @@ class Pipeline:
         except OSError:
             return None, None
 
-        cache_key = (file_index, stat.st_mtime_ns, stat.st_size)
+        cache_key = (
+            file_index,
+            stat.st_mtime_ns,
+            stat.st_size,
+            str(self.device),
+            self.is_half,
+        )
         if cache_key == self._index_cache_key:
             return self._index_cache_value
 
         try:
-            index = faiss.read_index(file_index)
-            big_npy = index.reconstruct_n(0, index.ntotal)
+            cpu_index = faiss.read_index(file_index)
+            big_npy = cpu_index.reconstruct_n(0, cpu_index.ntotal)
         except Exception:
             traceback.print_exc()
             return None, None
+
+        index = cpu_index
+        if self._faiss_gpu_resources is not None:
+            try:
+                device_id = (
+                    self._torch_device.index
+                    if self._torch_device.index is not None
+                    else torch.cuda.current_device()
+                )
+                gpu_index = faiss.index_cpu_to_gpu(
+                    self._faiss_gpu_resources,
+                    device_id,
+                    cpu_index,
+                )
+                dtype = torch.float16 if self.is_half else torch.float32
+                big_npy = torch.as_tensor(big_npy, device=self.device, dtype=dtype)
+                index = gpu_index
+            except Exception:
+                logger.debug(
+                    "Failed to move FAISS index to CUDA; using CPU FAISS.",
+                    exc_info=True,
+                )
 
         self._index_cache_key = cache_key
         self._index_cache_value = (index, big_npy)
@@ -127,34 +168,57 @@ class Pipeline:
             feats = model.final_proj(logits[0]) if version == "v1" else logits[0]
         if protect < 0.5 and pitch is not None and pitchf is not None:
             feats0 = feats.clone()
-        if (
-            not isinstance(index, type(None))
-            and not isinstance(big_npy, type(None))
-            and index_rate != 0
-        ):
-            npy = feats[0].cpu().numpy()
-            if self.is_half:
-                npy = npy.astype("float32")
+        if index is not None and big_npy is not None and index_rate != 0:
+            if isinstance(big_npy, torch.Tensor):
+                npy = feats[0].contiguous().float()
+                try:
+                    score, ix = index.search(npy, k=8)
+                except Exception as exc:
+                    raise Exception("index mismatch") from exc
 
-            # _, I = index.search(npy, 1)
-            # npy = big_npy[I.squeeze()]
+                if not isinstance(score, torch.Tensor):
+                    score = torch.as_tensor(score, device=self.device)
+                else:
+                    score = score.to(device=self.device)
 
-            try:
-                score, ix = index.search(npy, k=8)
-            except Exception as exc:
-                raise Exception("index mistatch") from exc
-            np.maximum(score, 1e-8, out=score)
-            weight = np.reciprocal(score)
-            np.square(weight, out=weight)
-            weight /= weight.sum(axis=1, keepdims=True)
-            npy = np.sum(big_npy[ix] * np.expand_dims(weight, axis=2), axis=1)
+                if not isinstance(ix, torch.Tensor):
+                    ix = torch.as_tensor(ix, device=self.device)
+                else:
+                    ix = ix.to(device=self.device)
 
-            if self.is_half:
-                npy = npy.astype("float16")
-            feats = (
-                torch.from_numpy(npy).unsqueeze(0).to(self.device) * index_rate
-                + (1 - index_rate) * feats
-            )
+                ix = ix.long()
+                score = score.clamp_min(1e-8)
+                weight = score.reciprocal().square()
+                weight = weight / weight.sum(dim=1, keepdim=True)
+                npy = (big_npy[ix] * weight.unsqueeze(-1)).sum(dim=1)
+                feats = (
+                    npy.unsqueeze(0).to(dtype=feats.dtype).mul(index_rate)
+                    + (1 - index_rate) * feats
+                )
+            else:
+                npy = feats[0].cpu().numpy()
+                if self.is_half:
+                    npy = npy.astype("float32")
+
+                # _, I = index.search(npy, 1)
+                # npy = big_npy[Isqueeze()]
+
+                try:
+                    score, ix = index.search(npy, k=8)
+                except Exception as exc:
+                    raise Exception("index mismatch") from exc
+                np.maximum(score, 1e-8, out=score)
+                weight = np.reciprocal(score)
+                np.square(weight, out=weight)
+                weight /= weight.sum(axis=1, keepdims=True)
+                npy = np.sum(big_npy[ix] * np.expand_dims(weight, axis=2), axis=1)
+
+                if self.is_half:
+                    npy = npy.astype("float16")
+                feats = (
+                    torch.from_numpy(npy).unsqueeze(0).to(self.device) * index_rate
+                    + (1 - index_rate) * feats
+                )
 
         feats = F.interpolate(feats.permute(0, 2, 1), scale_factor=2).permute(0, 2, 1)
         if protect < 0.5 and pitch is not None and pitchf is not None:

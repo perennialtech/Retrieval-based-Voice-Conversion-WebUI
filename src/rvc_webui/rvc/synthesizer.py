@@ -52,6 +52,8 @@ def synthesizer_jit_export(
 
     model, cpt = load_synthesizer(model_path, device)
     assert isinstance(cpt, dict)
+    if is_half and torch.device(device).type == "cuda":
+        model = model.half()
     model.forward = model.infer
     inputs = None
     if mode == "trace":
