@@ -26,7 +26,10 @@ audio_format_dict: dict[str, str] = {
 
 @jit(nopython=True)
 def float_to_int16(audio: np.ndarray) -> np.ndarray:
-    am = int(math.ceil(float(np.abs(audio).max())) * 32768)
+    peak = float(np.abs(audio).max())
+    if peak == 0.0:
+        return np.zeros(audio.shape, dtype=np.int16)
+    am = int(math.ceil(peak) * 32768)
     am = 32767 * 32768 // am
     return np.multiply(audio, am).astype(np.int16)
 
@@ -98,15 +101,14 @@ def load_audio(
 
     # Estimated maximum total number of samples to pre-allocate the array
     # AV stores length in microseconds by default
+    estimated_rate = sr or audio_stream.sample_rate or 48000
     estimated_total_samples = (
-        int(container.duration * sr // 1_000_000) if sr is not None else 48000
+        int(container.duration * estimated_rate // 1_000_000)
+        if container.duration is not None
+        else estimated_rate
     )
     decoded_audio = np.zeros(
-        (
-            estimated_total_samples + 1
-            if channels == 1
-            else (channels, estimated_total_samples + 1)
-        ),
+        (channels, estimated_total_samples + 1),
         dtype=np.float32,
     )
 
@@ -134,24 +136,31 @@ def load_audio(
         if not rate:
             rate = r
         for frame_data in frames_data:
-            end_index = offset + len(frame_data[0])
+            if frame_data.ndim == 1:
+                frame_data = frame_data.reshape(1, -1)
+
+            end_index = offset + frame_data.shape[-1]
 
             # 检查 decoded_audio 是否有足够的空间，并在必要时调整大小
             if end_index > decoded_audio.shape[1]:
-                decoded_audio = np.resize(
-                    decoded_audio, (decoded_audio.shape[0], end_index * 4)
-                )
+                new_audio = np.zeros((channels, end_index * 2), dtype=np.float32)
+                new_audio[:, :offset] = decoded_audio[:, :offset]
+                decoded_audio = new_audio
 
-            np.copyto(decoded_audio[..., offset:end_index], frame_data)
-            offset += len(frame_data[0])
+            np.copyto(decoded_audio[:, offset:end_index], frame_data[:channels])
+            offset = end_index
 
     container.close()
 
     # Truncate the array to the actual size
-    decoded_audio = decoded_audio[..., :offset]
+    decoded_audio = decoded_audio[:, :offset]
 
-    if mono and decoded_audio.shape[0] > 1:
-        decoded_audio = decoded_audio.mean(0)
+    if mono:
+        decoded_audio = (
+            decoded_audio.mean(0) if decoded_audio.shape[0] > 1 else decoded_audio[0]
+        )
+    elif decoded_audio.shape[0] == 1:
+        decoded_audio = decoded_audio[0]
 
     if sr is not None:
         return decoded_audio
@@ -226,13 +235,13 @@ class AudioIoProcess(Process):
         self.is_output_wasapi_exclusive: bool = is_output_wasapi_exclusive
 
         self.__rec_ptr = 0
-        self.in_ptr = Value("i", 0)  # 当收满一个block时由本进程设置
-        self.out_ptr = Value("i", 0)  # 由主进程设置，指示下一次预期写入位置
-        self.play_ptr = Value("i", 0)  # 由本进程设置，指示当前音频已经播放到哪里
+        self.in_ptr = Value("i", 0, lock=False)  # 当收满一个block时由本进程设置
+        self.out_ptr = Value("i", 0, lock=False)  # 由主进程设置，指示下一次预期写入位置
+        self.play_ptr = Value("i", 0, lock=False)  # 由本进程设置，指示当前音频已经播放到哪里
         self.in_evt = Event()  # 当收满一个block时由本进程设置
         self.stop_evt = Event()  # 当主进程停止音频活动时由主进程设置
 
-        self.latency = Value("d", 114514.1919810)
+        self.latency = Value("d", 114514.1919810, lock=False)
 
         self.buf_shape: tuple = (self.buf_size, self.channels)
         self.buf_dtype: np.dtype = np.float32

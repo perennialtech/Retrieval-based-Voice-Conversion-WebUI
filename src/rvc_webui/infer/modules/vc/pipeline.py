@@ -25,19 +25,16 @@ def change_rms(data1, sr1, data2, sr2, rate):  # 1是输入音频，2是输出�
         y=data1, frame_length=sr1 // 2 * 2, hop_length=sr1 // 2
     )  # 每半秒一个点
     rms2 = librosa.feature.rms(y=data2, frame_length=sr2 // 2 * 2, hop_length=sr2 // 2)
-    rms1 = torch.from_numpy(rms1)
+    rms1 = torch.from_numpy(rms1).float()
     rms1 = F.interpolate(
         rms1.unsqueeze(0), size=data2.shape[0], mode="linear"
     ).squeeze()
-    rms2 = torch.from_numpy(rms2)
+    rms2 = torch.from_numpy(rms2).float()
     rms2 = F.interpolate(
         rms2.unsqueeze(0), size=data2.shape[0], mode="linear"
     ).squeeze()
-    rms2 = torch.max(rms2, torch.zeros_like(rms2) + 1e-6)
-    data2 *= (
-        torch.pow(rms1, torch.tensor(1 - rate))
-        * torch.pow(rms2, torch.tensor(rate - 1))
-    ).numpy()
+    rms2 = rms2.clamp_min_(1e-6)
+    data2 *= rms1.pow(1 - rate).mul_(rms2.pow(rate - 1)).numpy()
     return data2
 
 
@@ -68,6 +65,32 @@ class Pipeline:
             self.window,
             self.sr,
         )
+        self._index_cache_key = None
+        self._index_cache_value = (None, None)
+
+    def _load_index(self, file_index, index_rate):
+        if not file_index or index_rate == 0:
+            return None, None
+
+        try:
+            stat = os.stat(file_index)
+        except OSError:
+            return None, None
+
+        cache_key = (file_index, stat.st_mtime_ns, stat.st_size)
+        if cache_key == self._index_cache_key:
+            return self._index_cache_value
+
+        try:
+            index = faiss.read_index(file_index)
+            big_npy = index.reconstruct_n(0, index.ntotal)
+        except Exception:
+            traceback.print_exc()
+            return None, None
+
+        self._index_cache_key = cache_key
+        self._index_cache_value = (index, big_npy)
+        return index, big_npy
 
     def vc(
         self,
@@ -85,23 +108,21 @@ class Pipeline:
         protect,
     ):  # ,file_index,file_big_npy
         feats = torch.from_numpy(audio0)
-        if self.is_half:
-            feats = feats.half()
-        else:
-            feats = feats.float()
         if feats.dim() == 2:  # double channels
             feats = feats.mean(-1)
         assert feats.dim() == 1, feats.dim()
-        feats = feats.view(1, -1)
-        padding_mask = torch.BoolTensor(feats.shape).to(self.device).fill_(False)
+
+        dtype = torch.float16 if self.is_half else torch.float32
+        feats = feats.view(1, -1).to(device=self.device, dtype=dtype)
+        padding_mask = torch.zeros(feats.shape, dtype=torch.bool, device=self.device)
 
         inputs = {
-            "source": feats.to(self.device),
+            "source": feats,
             "padding_mask": padding_mask,
             "output_layer": 9 if version == "v1" else 12,
         }
         t0 = time()
-        with torch.no_grad():
+        with torch.inference_mode():
             logits = model.extract_features(**inputs)
             feats = model.final_proj(logits[0]) if version == "v1" else logits[0]
         if protect < 0.5 and pitch is not None and pitchf is not None:
@@ -120,9 +141,11 @@ class Pipeline:
 
             try:
                 score, ix = index.search(npy, k=8)
-            except:
-                raise Exception("index mistatch")
-            weight = np.square(1 / score)
+            except Exception as exc:
+                raise Exception("index mistatch") from exc
+            np.maximum(score, 1e-8, out=score)
+            weight = np.reciprocal(score)
+            np.square(weight, out=weight)
             weight /= weight.sum(axis=1, keepdims=True)
             npy = np.sum(big_npy[ix] * np.expand_dims(weight, axis=2), axis=1)
 
@@ -154,26 +177,21 @@ class Pipeline:
             feats = feats * pitchff + feats0 * (1 - pitchff)
             feats = feats.to(feats0.dtype)
         p_len = torch.tensor([p_len], device=self.device).long()
-        with torch.no_grad():
+        with torch.inference_mode():
             audio1 = (
-                (
-                    net_g.infer(
-                        feats,
-                        p_len,
-                        sid,
-                        pitch=pitch,
-                        pitchf=pitchf,
-                    )[0, 0]
-                )
-                .data.cpu()
+                net_g.infer(
+                    feats,
+                    p_len,
+                    sid,
+                    pitch=pitch,
+                    pitchf=pitchf,
+                )[0, 0]
+                .detach()
+                .cpu()
                 .float()
                 .numpy()
             )
         del feats, p_len, padding_mask
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        elif torch.backends.mps.is_available():
-            torch.mps.empty_cache()
         t2 = time()
         times[0] += t1 - t0
         times[2] += t2 - t1
@@ -199,21 +217,7 @@ class Pipeline:
         protect,
         f0_file=None,
     ):
-        if (
-            file_index != ""
-            # and file_big_npy != ""
-            # and os.path.exists(file_big_npy) == True
-            and os.path.exists(file_index)
-            and index_rate != 0
-        ):
-            try:
-                index = faiss.read_index(file_index)
-                big_npy = index.reconstruct_n(0, index.ntotal)
-            except:
-                traceback.print_exc()
-                index = big_npy = None
-        else:
-            index = big_npy = None
+        index, big_npy = self._load_index(file_index, index_rate)
         audio = signal.filtfilt(bh, ah, audio)
         audio_pad = np.pad(audio, (self.window // 2, self.window // 2), mode="reflect")
         opt_ts = []
@@ -265,10 +269,10 @@ class Pipeline:
                 pitch, pitchf = f0_method
             pitch = pitch[:p_len]
             pitchf = pitchf[:p_len]
-            if "mps" not in str(self.device) or "xpu" not in str(self.device):
+            if "mps" not in str(self.device) and "xpu" not in str(self.device):
                 pitchf = pitchf.astype(np.float32)
-            pitch = torch.tensor(pitch, device=self.device).unsqueeze(0).long()
-            pitchf = torch.tensor(pitchf, device=self.device).unsqueeze(0).float()
+            pitch = torch.as_tensor(pitch, device=self.device).unsqueeze(0).long()
+            pitchf = torch.as_tensor(pitchf, device=self.device).unsqueeze(0).float()
         t2 = time()
         times[1] += t2 - t1
         for t in opt_ts:
@@ -355,8 +359,4 @@ class Pipeline:
             max_int16 /= audio_max
         np.multiply(audio_opt, max_int16, audio_opt)
         del pitch, pitchf, sid
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        elif torch.backends.mps.is_available():
-            torch.mps.empty_cache()
         return audio_opt
