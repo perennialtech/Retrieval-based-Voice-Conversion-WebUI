@@ -58,6 +58,7 @@ rvc-gui = "rvc_webui.main_gui:main"
 rvc-infer = "rvc_webui.cli.infer_cli:main"
 rvc-infer-batch = "rvc_webui.cli.infer_batch_rvc:main"
 
+# FIXME: Import torchcrepe and torchfcpe properly
 [project.optional-dependencies]
 cpu = [
     "faiss-cpu",
@@ -66,8 +67,8 @@ cpu = [
     "torchaudio>=2.6",
     "torchvision>=0.21",
     "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f",
-    "torchcrepe>=0.0.23",
-    "torchfcpe",
+    # "torchcrepe>=0.0.23",
+    # "torchfcpe",
 ]
 
 cuda = [
@@ -77,8 +78,8 @@ cuda = [
     "torchaudio>=2.6; sys_platform != 'darwin'",
     "torchvision>=0.21; sys_platform != 'darwin'",
     "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform != 'darwin'",
-    "torchcrepe>=0.0.23; sys_platform != 'darwin'",
-    "torchfcpe; sys_platform != 'darwin'",
+    # "torchcrepe>=0.0.23; sys_platform != 'darwin'",
+    # "torchfcpe; sys_platform != 'darwin'",
 ]
 
 rocm = [
@@ -88,8 +89,8 @@ rocm = [
     "torchaudio>=2.6; sys_platform == 'linux'",
     "torchvision>=0.21; sys_platform == 'linux'",
     "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'linux'",
-    "torchcrepe>=0.0.23; sys_platform == 'linux'",
-    "torchfcpe; sys_platform == 'linux'",
+    # "torchcrepe>=0.0.23; sys_platform == 'linux'",
+    # "torchfcpe; sys_platform == 'linux'",
 ]
 
 xpu = [
@@ -99,8 +100,8 @@ xpu = [
     "torchaudio>=2.6; sys_platform == 'linux'",
     "torchvision>=0.21; sys_platform == 'linux'",
     "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'linux'",
-    "torchcrepe>=0.0.23; sys_platform == 'linux'",
-    "torchfcpe; sys_platform == 'linux'",
+    # "torchcrepe>=0.0.23; sys_platform == 'linux'",
+    # "torchfcpe; sys_platform == 'linux'",
 ]
 
 dml = [
@@ -110,8 +111,8 @@ dml = [
     "torchvision; sys_platform == 'win32'",
     "torchaudio; sys_platform == 'win32'",
     "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'win32'",
-    "torchcrepe>=0.0.23; sys_platform == 'win32'",
-    "torchfcpe; sys_platform == 'win32'",
+    # "torchcrepe>=0.0.23; sys_platform == 'win32'",
+    # "torchfcpe; sys_platform == 'win32'",
 ]
 
 gui = [

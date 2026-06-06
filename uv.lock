@@ -2261,23 +2261,17 @@ cpu = [
     { name = "fairseq" },
     { name = "faiss-cpu" },
     { name = "onnxruntime" },
-    { name = "torchcrepe" },
-    { name = "torchfcpe" },
 ]
 cuda = [
     { name = "fairseq", marker = "sys_platform != 'darwin'" },
     { name = "faiss-gpu-cu12", marker = "sys_platform != 'darwin'" },
     { name = "onnxruntime-gpu", marker = "sys_platform != 'darwin'" },
-    { name = "torchcrepe", marker = "sys_platform != 'darwin'" },
-    { name = "torchfcpe", marker = "sys_platform != 'darwin'" },
 ]
 dml = [
     { name = "fairseq", marker = "sys_platform == 'win32'" },
     { name = "faiss-cpu", marker = "sys_platform == 'win32'" },
     { name = "onnxruntime-directml", marker = "sys_platform == 'win32'" },
     { name = "torch-directml", marker = "sys_platform == 'win32'" },
-    { name = "torchcrepe", marker = "sys_platform == 'win32'" },
-    { name = "torchfcpe", marker = "sys_platform == 'win32'" },
 ]
 gui = [
     { name = "einops" },
@@ -2290,15 +2284,11 @@ rocm = [
     { name = "fairseq", marker = "sys_platform == 'linux'" },
     { name = "faiss-cpu", marker = "sys_platform == 'linux'" },
     { name = "onnxruntime", marker = "sys_platform == 'linux'" },
-    { name = "torchcrepe", marker = "sys_platform == 'linux'" },
-    { name = "torchfcpe", marker = "sys_platform == 'linux'" },
 ]
 xpu = [
     { name = "fairseq", marker = "sys_platform == 'linux'" },
     { name = "faiss-cpu", marker = "sys_platform == 'linux'" },
     { name = "onnxruntime", marker = "sys_platform == 'linux'" },
-    { name = "torchcrepe", marker = "sys_platform == 'linux'" },
-    { name = "torchfcpe", marker = "sys_platform == 'linux'" },
 ]
 
 [package.dev-dependencies]
@@ -2388,16 +2378,6 @@ requires-dist = [
     { name = "torchaudio", marker = "(sys_platform == 'win32' and extra == 'cpu' and extra == 'dml') or (sys_platform == 'win32' and extra == 'cuda' and extra == 'dml') or (sys_platform == 'win32' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'win32' and extra == 'dml' and extra == 'xpu')" },
     { name = "torchaudio", marker = "(extra == 'cpu' and extra == 'cuda') or (extra == 'cpu' and extra == 'dml') or (extra == 'cpu' and extra == 'rocm') or (extra == 'cpu' and extra == 'xpu')", specifier = ">=2.6" },
     { name = "torchaudio", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cpu" },
-    { name = "torchcrepe", marker = "sys_platform != 'darwin' and extra == 'cuda'", specifier = ">=0.0.23" },
-    { name = "torchcrepe", marker = "sys_platform == 'linux' and extra == 'rocm'", specifier = ">=0.0.23" },
-    { name = "torchcrepe", marker = "sys_platform == 'linux' and extra == 'xpu'", specifier = ">=0.0.23" },
-    { name = "torchcrepe", marker = "sys_platform == 'win32' and extra == 'dml'", specifier = ">=0.0.23" },
-    { name = "torchcrepe", marker = "extra == 'cpu'", specifier = ">=0.0.23" },
-    { name = "torchfcpe", marker = "sys_platform != 'darwin' and extra == 'cuda'" },
-    { name = "torchfcpe", marker = "sys_platform == 'linux' and extra == 'rocm'" },
-    { name = "torchfcpe", marker = "sys_platform == 'linux' and extra == 'xpu'" },
-    { name = "torchfcpe", marker = "sys_platform == 'win32' and extra == 'dml'" },
-    { name = "torchfcpe", marker = "extra == 'cpu'" },
     { name = "torchvision", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/cu129" },
     { name = "torchvision", marker = "(sys_platform != 'darwin' and extra == 'cpu' and extra == 'cuda') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'dml') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'rocm') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'xpu')", specifier = ">=0.21" },
     { name = "torchvision", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/xpu" },
@@ -2801,51 +2781,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4d/73/c48b54f0e70c13f5b5b46f8f76ed4a666f5175772fa9e550ebd61a78d478/torch_einops_utils-0.1.2.tar.gz", hash = "sha256:3c482e877e3ad0a793590d7697051f2fbe54847e5ab29ad6935ccf10c2d24314", size = 10899, upload-time = "2026-06-02T16:53:43.721Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a6/c4/afc862b97c8043d994d3c379f4a4612889a757d47ef14a15624182bc70eb/torch_einops_utils-0.1.2-py3-none-any.whl", hash = "sha256:d22cd62a799d647706614e9cc9aa806b1dc6a3295855d199c6d618075025fdf1", size = 8174, upload-time = "2026-06-02T16:53:42.855Z" },
-]
-
-[[package]]
-name = "torchaudio"
-version = "2.11.0"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f1/b1/77658817acacd01a72b714440c62f419efc4d90170e704e8e7a2c0918988/torchaudio-2.11.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:a1cf1acc883bee9cb906a933572fed6a8a933f86ef34e9ea7d803f72317e8c1b", size = 684226, upload-time = "2026-03-23T18:13:40.023Z" },
-    { url = "https://files.pythonhosted.org/packages/78/28/c7adc053039f286c2aca0038b766cbe3294e66fec6b29a820e95128f9ede/torchaudio-2.11.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:bc653defca1c16154398517a1adc98d0fb7f1dd08e58ced217558d213c2c6e29", size = 1626670, upload-time = "2026-03-23T18:13:42.162Z" },
-    { url = "https://files.pythonhosted.org/packages/88/d8/d6d0f896e064aa67377484efef4911cdcc07bce2929474e1417cc0af18c2/torchaudio-2.11.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:6503c0bdb29daf2e6281bb70ea2dfe2c3553b782b619eb5d73bdadd8a3f7cecf", size = 1771992, upload-time = "2026-03-23T18:13:33.188Z" },
-    { url = "https://files.pythonhosted.org/packages/23/a8/941277ecc39f7a0a169d554302a1f1afd87c1d94a8aec828891916cea59a/torchaudio-2.11.0-cp312-cp312-win_amd64.whl", hash = "sha256:478110f981e5d40a8d82221732c57a56c85a1d5895fb8fe646e86ee15eded3bd", size = 328663, upload-time = "2026-03-23T18:13:19.218Z" },
-]
-
-[[package]]
-name = "torchcrepe"
-version = "0.0.24"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "librosa" },
-    { name = "resampy" },
-    { name = "scipy" },
-    { name = "torch", version = "2.4.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-9-rvc-webui-dml' or (extra == 'extra-9-rvc-webui-cpu' and extra == 'extra-9-rvc-webui-cuda') or (extra == 'extra-9-rvc-webui-cuda' and extra == 'extra-9-rvc-webui-rocm') or (extra == 'extra-9-rvc-webui-cuda' and extra == 'extra-9-rvc-webui-xpu') or (extra == 'extra-9-rvc-webui-rocm' and extra == 'extra-9-rvc-webui-xpu') or (extra == 'extra-9-rvc-webui-cpu' and extra != 'extra-9-rvc-webui-dml' and extra == 'extra-9-rvc-webui-rocm') or (extra == 'extra-9-rvc-webui-cpu' and extra != 'extra-9-rvc-webui-dml' and extra == 'extra-9-rvc-webui-xpu')" },
-    { name = "torch", version = "2.10.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-9-rvc-webui-cpu' or extra == 'extra-9-rvc-webui-cuda' or extra == 'extra-9-rvc-webui-rocm' or extra == 'extra-9-rvc-webui-xpu'" },
-    { name = "torchaudio" },
-    { name = "tqdm" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/98/0da59205962218ed1be90034aa11db3e2e10a54293508ef0aa07a1e5ceb9/torchcrepe-0.0.24.tar.gz", hash = "sha256:7eebdd59bdfed822ac19820cb73823335e4eba88f1c76c411a7ab05f7ca6db0a", size = 72329307, upload-time = "2025-05-16T18:41:41.393Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9b/a9/799d00b9dc7a18bb0ff53fccc187b1d83c690e337d078345c17ec0a1a224/torchcrepe-0.0.24-py3-none-any.whl", hash = "sha256:ec054c23c9d45328f213f93a0131570a3f0e5903e9382792bed95f17a8c36d5a", size = 72326298, upload-time = "2025-05-16T18:41:13.419Z" },
-]
-
-[[package]]
-name = "torchfcpe"
-version = "0.0.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "einops" },
-    { name = "local-attention" },
-    { name = "numpy" },
-    { name = "torch", version = "2.4.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-9-rvc-webui-dml' or (extra == 'extra-9-rvc-webui-cpu' and extra == 'extra-9-rvc-webui-cuda') or (extra == 'extra-9-rvc-webui-cuda' and extra == 'extra-9-rvc-webui-rocm') or (extra == 'extra-9-rvc-webui-cuda' and extra == 'extra-9-rvc-webui-xpu') or (extra == 'extra-9-rvc-webui-rocm' and extra == 'extra-9-rvc-webui-xpu') or (extra == 'extra-9-rvc-webui-cpu' and extra != 'extra-9-rvc-webui-dml' and extra == 'extra-9-rvc-webui-rocm') or (extra == 'extra-9-rvc-webui-cpu' and extra != 'extra-9-rvc-webui-dml' and extra == 'extra-9-rvc-webui-xpu')" },
-    { name = "torch", version = "2.10.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-9-rvc-webui-cpu' or extra == 'extra-9-rvc-webui-cuda' or extra == 'extra-9-rvc-webui-rocm' or extra == 'extra-9-rvc-webui-xpu'" },
-    { name = "torchaudio" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/98/66da447498a2835b01cb3ae851e1333035a9fbf228e5c6f3e3c4351c06b6/torchfcpe-0.0.4-py3-none-any.whl", hash = "sha256:f042c463d850d76c6f4899a0b84f0b694bb560adf05f4de951097a756d17472d", size = 40222012, upload-time = "2024-03-06T20:03:43.685Z" },
 ]
 
 [[package]]
