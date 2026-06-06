@@ -15,7 +15,6 @@ dependencies = [
     "av",
     "colorama>=0.4.5",
     "cython",
-    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f",
     "fastapi",
     "fsspec>=2022.11.0",
     "gradio",
@@ -46,8 +45,6 @@ dependencies = [
     "tabulate>=0.8.10",
     "tensorboard",
     "tensorboardx",
-    "torchcrepe>=0.0.23",
-    "torchfcpe",
     "tornado>=6.1",
     "tqdm>=4.63.1",
     "uc-micro-py>=1.0.1",
@@ -68,6 +65,10 @@ cpu = [
     "torch>=2.6",
     "torchaudio>=2.6",
     "torchvision>=0.21",
+    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f",
+    "local-attention",
+    "torchcrepe>=0.0.23",
+    "torchfcpe",
 ]
 
 cuda = [
@@ -76,36 +77,51 @@ cuda = [
     "torch>=2.6; sys_platform != 'darwin'",
     "torchaudio>=2.6; sys_platform != 'darwin'",
     "torchvision>=0.21; sys_platform != 'darwin'",
+    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform != 'darwin'",
+    "local-attention; sys_platform != 'darwin'",
+    "torchcrepe>=0.0.23; sys_platform != 'darwin'",
+    "torchfcpe; sys_platform != 'darwin'",
 ]
 
 rocm = [
-    "faiss-cpu",
+    "faiss-cpu; sys_platform == 'linux'",
     "onnxruntime; sys_platform == 'linux'",
     "torch>=2.6; sys_platform == 'linux'",
     "torchaudio>=2.6; sys_platform == 'linux'",
     "torchvision>=0.21; sys_platform == 'linux'",
+    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'linux'",
+    "local-attention; sys_platform == 'linux'",
+    "torchcrepe>=0.0.23; sys_platform == 'linux'",
+    "torchfcpe; sys_platform == 'linux'",
 ]
 
 xpu = [
-    "faiss-cpu",
+    "faiss-cpu; sys_platform == 'linux'",
     "onnxruntime; sys_platform == 'linux'",
     "torch>=2.6; sys_platform == 'linux'",
     "torchaudio>=2.6; sys_platform == 'linux'",
     "torchvision>=0.21; sys_platform == 'linux'",
+    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'linux'",
+    "local-attention; sys_platform == 'linux'",
+    "torchcrepe>=0.0.23; sys_platform == 'linux'",
+    "torchfcpe; sys_platform == 'linux'",
 ]
 
 dml = [
-    "faiss-cpu",
+    "faiss-cpu; sys_platform == 'win32'",
     "onnxruntime-directml; sys_platform == 'win32'",
     "torch-directml; sys_platform == 'win32'",
     "torchvision; sys_platform == 'win32'",
     "torchaudio; sys_platform == 'win32'",
+    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'win32'",
+    "local-attention; sys_platform == 'win32'",
+    "torchcrepe>=0.0.23; sys_platform == 'win32'",
+    "torchfcpe; sys_platform == 'win32'",
 ]
 
 gui = [
     "einops",
     "freesimplegui",
-    "local-attention",
     "noisereduce",
     "sounddevice",
 ]
