@@ -59,16 +59,17 @@ class Pipeline:
         self._torch_device = torch.device(self.device)
 
         self._faiss_gpu_resources = None
-        if self._torch_device.type == "cuda":
-            try:
-                import faiss.contrib.torch_utils  # noqa: F401
-
-                self._faiss_gpu_resources = faiss.StandardGpuResources()
-            except Exception:
-                logger.debug(
-                    "FAISS GPU is unavailable; using CPU FAISS.",
-                    exc_info=True,
-                )
+        # NOTE: throws `AssertionError: GPU tensor on CPU index not allowed`.
+        # if self._torch_device.type == "cuda":
+        #     try:
+        #         import faiss.contrib.torch_utils  # noqa: F401
+        #
+        #         self._faiss_gpu_resources = faiss.StandardGpuResources()
+        #     except Exception:
+        #         logger.debug(
+        #             "FAISS GPU is unavailable; using CPU FAISS.",
+        #             exc_info=True,
+        #         )
 
         self.f0_gen = Generator(
             Path(os.environ["rmvpe_root"]),
