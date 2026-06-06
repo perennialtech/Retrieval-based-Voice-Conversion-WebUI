@@ -15,7 +15,6 @@ dependencies = [
     "av",
     "colorama>=0.4.5",
     "cython",
-    "faiss-cpu",
     "fairseq @ git+https://github.com/fumiama/fairseq.git@ffd2933ffccb088f61eeae951fbaa664b45c584f",
     "fastapi",
     "fsspec>=2022.11.0",
@@ -66,6 +65,7 @@ rvc-infer-batch = "rvc_webui.cli.infer_batch_rvc:main"
 
 [project.optional-dependencies]
 cpu = [
+    "faiss-cpu",
     "onnxruntime",
     "torch>=2.6",
     "torchaudio>=2.6",
@@ -73,6 +73,7 @@ cpu = [
 ]
 
 cuda = [
+    "faiss-gpu-cu12; sys_platform != 'darwin'",
     "onnxruntime-gpu; sys_platform != 'darwin'",
     "torch>=2.6; sys_platform != 'darwin'",
     "torchaudio>=2.6; sys_platform != 'darwin'",
@@ -80,6 +81,7 @@ cuda = [
 ]
 
 rocm = [
+    "faiss-cpu",
     "onnxruntime; sys_platform == 'linux'",
     "torch>=2.6; sys_platform == 'linux'",
     "torchaudio>=2.6; sys_platform == 'linux'",
@@ -87,6 +89,7 @@ rocm = [
 ]
 
 xpu = [
+    "faiss-cpu",
     "onnxruntime; sys_platform == 'linux'",
     "torch>=2.6; sys_platform == 'linux'",
     "torchaudio>=2.6; sys_platform == 'linux'",
@@ -94,6 +97,7 @@ xpu = [
 ]
 
 dml = [
+    "faiss-cpu",
     "onnxruntime-directml; sys_platform == 'win32'",
     "torch-directml; sys_platform == 'win32'",
     "torchvision; sys_platform == 'win32'",
