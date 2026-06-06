@@ -54,6 +54,7 @@ dependencies = [
     "uc-micro-py>=1.0.1",
     "uvicorn>=0.21.1",
     "werkzeug>=2.2.3",
+    "freesimplegui>=5.2.0.post1",
 ]
 
 [project.scripts]
