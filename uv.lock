@@ -2272,6 +2272,8 @@ dml = [
     { name = "faiss-cpu", marker = "sys_platform == 'win32'" },
     { name = "onnxruntime-directml", marker = "sys_platform == 'win32'" },
     { name = "torch-directml", marker = "sys_platform == 'win32'" },
+    { name = "torchaudio", marker = "sys_platform == 'win32'" },
+    { name = "torchvision", marker = "sys_platform == 'win32'" },
 ]
 gui = [
     { name = "einops" },
@@ -2349,6 +2351,8 @@ requires-dist = [
     { name = "pybase16384" },
     { name = "pydub", specifier = ">=0.25.1" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "pytorch-triton-rocm", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", index = "https://download.pytorch.org/whl/rocm6.2", conflict = { package = "rvc-webui", extra = "rocm" } },
+    { name = "pytorch-triton-rocm", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')" },
     { name = "pyworld", specifier = ">=0.3.2" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "resampy", specifier = ">=0.4.2" },
@@ -2359,37 +2363,39 @@ requires-dist = [
     { name = "tabulate", specifier = ">=0.8.10" },
     { name = "tensorboard" },
     { name = "tensorboardx" },
-    { name = "torch", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cu128" },
+    { name = "torch", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "rvc-webui", extra = "cuda" } },
     { name = "torch", marker = "(sys_platform != 'darwin' and extra == 'cpu' and extra == 'cuda') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'dml') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'rocm') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'xpu')", specifier = ">=2.6" },
-    { name = "torch", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/xpu" },
-    { name = "torch", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/rocm6.2" },
+    { name = "torch", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/xpu", conflict = { package = "rvc-webui", extra = "xpu" } },
+    { name = "torch", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/rocm6.2", conflict = { package = "rvc-webui", extra = "rocm" } },
     { name = "torch", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')", specifier = ">=2.6" },
     { name = "torch", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'dml' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')", specifier = ">=2.6" },
     { name = "torch", marker = "(extra == 'cpu' and extra == 'cuda') or (extra == 'cpu' and extra == 'dml') or (extra == 'cpu' and extra == 'rocm') or (extra == 'cpu' and extra == 'xpu')", specifier = ">=2.6" },
-    { name = "torch", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cpu" },
+    { name = "torch", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "rvc-webui", extra = "cpu" } },
     { name = "torch-directml", marker = "sys_platform == 'win32' and extra == 'dml'" },
-    { name = "torchaudio", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cu128" },
+    { name = "torchaudio", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "rvc-webui", extra = "cuda" } },
     { name = "torchaudio", marker = "(sys_platform != 'darwin' and extra == 'cpu' and extra == 'cuda') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'dml') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'rocm') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'xpu')", specifier = ">=2.6" },
-    { name = "torchaudio", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/xpu" },
-    { name = "torchaudio", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/rocm6.2" },
+    { name = "torchaudio", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/xpu", conflict = { package = "rvc-webui", extra = "xpu" } },
+    { name = "torchaudio", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/rocm6.2", conflict = { package = "rvc-webui", extra = "rocm" } },
     { name = "torchaudio", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')", specifier = ">=2.6" },
     { name = "torchaudio", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'dml' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')", specifier = ">=2.6" },
-    { name = "torchaudio", marker = "sys_platform == 'win32' and extra != 'cpu' and extra != 'cuda' and extra == 'dml' and extra != 'rocm' and extra != 'xpu'", index = "https://pypi.org/simple" },
-    { name = "torchaudio", marker = "(sys_platform == 'win32' and extra == 'cpu' and extra == 'dml') or (sys_platform == 'win32' and extra == 'cuda' and extra == 'dml') or (sys_platform == 'win32' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'win32' and extra == 'dml' and extra == 'xpu')" },
+    { name = "torchaudio", marker = "sys_platform == 'win32' and extra == 'dml'" },
     { name = "torchaudio", marker = "(extra == 'cpu' and extra == 'cuda') or (extra == 'cpu' and extra == 'dml') or (extra == 'cpu' and extra == 'rocm') or (extra == 'cpu' and extra == 'xpu')", specifier = ">=2.6" },
-    { name = "torchaudio", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cpu" },
-    { name = "torchvision", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/cu128" },
+    { name = "torchaudio", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "rvc-webui", extra = "cpu" } },
+    { name = "torchvision", marker = "sys_platform != 'darwin' and extra != 'cpu' and extra == 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "rvc-webui", extra = "cuda" } },
     { name = "torchvision", marker = "(sys_platform != 'darwin' and extra == 'cpu' and extra == 'cuda') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'dml') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'rocm') or (sys_platform != 'darwin' and extra == 'cuda' and extra == 'xpu')", specifier = ">=0.21" },
-    { name = "torchvision", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/xpu" },
-    { name = "torchvision", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/rocm6.2" },
+    { name = "torchvision", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/xpu", conflict = { package = "rvc-webui", extra = "xpu" } },
+    { name = "torchvision", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/rocm6.2", conflict = { package = "rvc-webui", extra = "rocm" } },
     { name = "torchvision", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')", specifier = ">=0.21" },
     { name = "torchvision", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'dml' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')", specifier = ">=0.21" },
-    { name = "torchvision", marker = "sys_platform == 'win32' and extra != 'cpu' and extra != 'cuda' and extra == 'dml' and extra != 'rocm' and extra != 'xpu'", index = "https://pypi.org/simple" },
-    { name = "torchvision", marker = "(sys_platform == 'win32' and extra == 'cpu' and extra == 'dml') or (sys_platform == 'win32' and extra == 'cuda' and extra == 'dml') or (sys_platform == 'win32' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'win32' and extra == 'dml' and extra == 'xpu')" },
+    { name = "torchvision", marker = "sys_platform == 'win32' and extra == 'dml'" },
     { name = "torchvision", marker = "(extra == 'cpu' and extra == 'cuda') or (extra == 'cpu' and extra == 'dml') or (extra == 'cpu' and extra == 'rocm') or (extra == 'cpu' and extra == 'xpu')", specifier = ">=0.21" },
-    { name = "torchvision", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/cpu" },
+    { name = "torchvision", marker = "extra == 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra != 'xpu'", specifier = ">=0.21", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "rvc-webui", extra = "cpu" } },
     { name = "tornado", specifier = ">=6.1" },
     { name = "tqdm", specifier = ">=4.63.1" },
+    { name = "triton-rocm", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra == 'rocm' and extra != 'xpu'", index = "https://download.pytorch.org/whl/rocm6.2", conflict = { package = "rvc-webui", extra = "rocm" } },
+    { name = "triton-rocm", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'dml' and extra == 'rocm') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')" },
+    { name = "triton-xpu", marker = "sys_platform == 'linux' and extra != 'cpu' and extra != 'cuda' and extra != 'dml' and extra != 'rocm' and extra == 'xpu'", index = "https://download.pytorch.org/whl/xpu", conflict = { package = "rvc-webui", extra = "xpu" } },
+    { name = "triton-xpu", marker = "(sys_platform == 'linux' and extra == 'cpu' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'cuda' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'dml' and extra == 'xpu') or (sys_platform == 'linux' and extra == 'rocm' and extra == 'xpu')" },
     { name = "uc-micro-py", specifier = ">=1.0.1" },
     { name = "uvicorn", specifier = ">=0.21.1" },
     { name = "werkzeug", specifier = ">=2.2.3" },
@@ -2781,6 +2787,17 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4d/73/c48b54f0e70c13f5b5b46f8f76ed4a666f5175772fa9e550ebd61a78d478/torch_einops_utils-0.1.2.tar.gz", hash = "sha256:3c482e877e3ad0a793590d7697051f2fbe54847e5ab29ad6935ccf10c2d24314", size = 10899, upload-time = "2026-06-02T16:53:43.721Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a6/c4/afc862b97c8043d994d3c379f4a4612889a757d47ef14a15624182bc70eb/torch_einops_utils-0.1.2-py3-none-any.whl", hash = "sha256:d22cd62a799d647706614e9cc9aa806b1dc6a3295855d199c6d618075025fdf1", size = 8174, upload-time = "2026-06-02T16:53:42.855Z" },
+]
+
+[[package]]
+name = "torchaudio"
+version = "2.11.0"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f1/b1/77658817acacd01a72b714440c62f419efc4d90170e704e8e7a2c0918988/torchaudio-2.11.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:a1cf1acc883bee9cb906a933572fed6a8a933f86ef34e9ea7d803f72317e8c1b", size = 684226, upload-time = "2026-03-23T18:13:40.023Z" },
+    { url = "https://files.pythonhosted.org/packages/78/28/c7adc053039f286c2aca0038b766cbe3294e66fec6b29a820e95128f9ede/torchaudio-2.11.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:bc653defca1c16154398517a1adc98d0fb7f1dd08e58ced217558d213c2c6e29", size = 1626670, upload-time = "2026-03-23T18:13:42.162Z" },
+    { url = "https://files.pythonhosted.org/packages/88/d8/d6d0f896e064aa67377484efef4911cdcc07bce2929474e1417cc0af18c2/torchaudio-2.11.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:6503c0bdb29daf2e6281bb70ea2dfe2c3553b782b619eb5d73bdadd8a3f7cecf", size = 1771992, upload-time = "2026-03-23T18:13:33.188Z" },
+    { url = "https://files.pythonhosted.org/packages/23/a8/941277ecc39f7a0a169d554302a1f1afd87c1d94a8aec828891916cea59a/torchaudio-2.11.0-cp312-cp312-win_amd64.whl", hash = "sha256:478110f981e5d40a8d82221732c57a56c85a1d5895fb8fe646e86ee15eded3bd", size = 328663, upload-time = "2026-03-23T18:13:19.218Z" },
 ]
 
 [[package]]
