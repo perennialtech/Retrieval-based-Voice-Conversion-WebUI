@@ -85,9 +85,9 @@ cuda = [
 rocm = [
     "faiss-cpu; sys_platform == 'linux'",
     "onnxruntime; sys_platform == 'linux'",
-    "torch>=2.6; sys_platform == 'linux'",
-    "torchaudio>=2.6; sys_platform == 'linux'",
-    "torchvision>=0.21; sys_platform == 'linux'",
+    "torch>=2.5.1; sys_platform == 'linux'",
+    "torchaudio>=2.5.1; sys_platform == 'linux'",
+    "torchvision>=0.20.1; sys_platform == 'linux'",
     "pytorch-triton-rocm; sys_platform == 'linux'",
     "triton-rocm; sys_platform == 'linux'",
     "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f ; sys_platform == 'linux'",
@@ -168,41 +168,38 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
-# NOTE: `uv` validates `[tool.uv.sources]` markers independently and
-# does not use `[tool.uv].conflicts` to prove exclusivity, so the
-# verbose `extra == 'cuda' and extra != 'rocm' ...` form is intentional.
 [tool.uv.sources]
 torch = [
-    { index = "pytorch-cu128", extra = "cuda", marker = "sys_platform != 'darwin' and extra != 'dml' and extra != 'rocm' and extra != 'xpu' and extra != 'cpu'" },
-    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'xpu' and extra != 'cpu'" },
-    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
-    { index = "pytorch-cpu", extra = "cpu", marker = "extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'xpu'" },
+    { index = "pytorch-cu128", extra = "cuda", marker = "sys_platform != 'darwin'" },
+    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cpu", extra = "cpu" },
 ]
 
 torchvision = [
-    { index = "pytorch-cu128", extra = "cuda", marker = "sys_platform != 'darwin' and extra != 'dml' and extra != 'rocm' and extra != 'xpu' and extra != 'cpu'" },
-    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'xpu' and extra != 'cpu'" },
-    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
-    { index = "pytorch-cpu", extra = "cpu", marker = "extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'xpu'" },
+    { index = "pytorch-cu128", extra = "cuda", marker = "sys_platform != 'darwin'" },
+    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cpu", extra = "cpu" },
 ]
 
 torchaudio = [
-    { index = "pytorch-cu128", extra = "cuda", marker = "sys_platform != 'darwin' and extra != 'dml' and extra != 'rocm' and extra != 'xpu' and extra != 'cpu'" },
-    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'xpu' and extra != 'cpu'" },
-    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
-    { index = "pytorch-cpu", extra = "cpu", marker = "extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'xpu'" },
+    { index = "pytorch-cu128", extra = "cuda", marker = "sys_platform != 'darwin'" },
+    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cpu", extra = "cpu" },
 ]
 
 pytorch-triton-rocm = [
-    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'xpu' and extra != 'cpu'" },
+    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux'" },
 ]
 
 triton-rocm = [
-    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'xpu' and extra != 'cpu'" },
+    { index = "pytorch-rocm62", extra = "rocm", marker = "sys_platform == 'linux'" },
 ]
 
 triton-xpu = [
-    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux' and extra != 'dml' and extra != 'cuda' and extra != 'rocm' and extra != 'cpu'" },
+    { index = "pytorch-xpu", extra = "xpu", marker = "sys_platform == 'linux'" },
 ]
 
 [build-system]
