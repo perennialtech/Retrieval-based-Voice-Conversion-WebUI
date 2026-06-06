@@ -15,7 +15,7 @@ dependencies = [
     "av",
     "colorama>=0.4.5",
     "cython",
-    "fairseq @ git+https://github.com/fumiama/fairseq.git@ffd2933ffccb088f61eeae951fbaa664b45c584f",
+    "fairseq @ git+https://github.com/perennialtech/fairseq.git@ae692e1ab6dc70a5266f542bc25dd847abb5172f",
     "fastapi",
     "fsspec>=2022.11.0",
     "gradio",
