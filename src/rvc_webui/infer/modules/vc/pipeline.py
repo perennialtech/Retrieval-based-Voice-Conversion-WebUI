@@ -65,7 +65,7 @@ class Pipeline:
 
                 self._faiss_gpu_resources = faiss.StandardGpuResources()
             except Exception:
-                logger.debug(
+                logger.warning(
                     "FAISS GPU is unavailable; using CPU FAISS.",
                     exc_info=True,
                 )
@@ -127,7 +127,7 @@ class Pipeline:
                 big_npy = torch.as_tensor(big_npy, device=self.device, dtype=dtype)
                 index = gpu_index
             except Exception:
-                logger.debug(
+                logger.warning(
                     "Failed to move FAISS index to CUDA; using CPU FAISS.",
                     exc_info=True,
                 )
