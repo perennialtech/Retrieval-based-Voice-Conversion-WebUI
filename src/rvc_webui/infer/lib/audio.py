@@ -237,7 +237,9 @@ class AudioIoProcess(Process):
         self.__rec_ptr = 0
         self.in_ptr = Value("i", 0, lock=False)  # 当收满一个block时由本进程设置
         self.out_ptr = Value("i", 0, lock=False)  # 由主进程设置，指示下一次预期写入位置
-        self.play_ptr = Value("i", 0, lock=False)  # 由本进程设置，指示当前音频已经播放到哪里
+        self.play_ptr = Value(
+            "i", 0, lock=False
+        )  # 由本进程设置，指示当前音频已经播放到哪里
         self.in_evt = Event()  # 当收满一个block时由本进程设置
         self.stop_evt = Event()  # 当主进程停止音频活动时由主进程设置
 

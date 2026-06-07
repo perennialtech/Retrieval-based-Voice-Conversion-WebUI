@@ -1,4 +1,3 @@
-
 import torch
 from torch import nn
 from torch.nn import Conv1d, Conv2d
